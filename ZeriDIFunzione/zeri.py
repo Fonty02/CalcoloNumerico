@@ -143,4 +143,6 @@ def bisezioni_misto(f, a, b, tol, itmax):
 
 
 def f(x):
-    return x - math.cos(x)
+    return x - cos(x)
+
+
