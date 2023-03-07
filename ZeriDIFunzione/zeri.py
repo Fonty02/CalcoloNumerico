@@ -35,7 +35,7 @@ def bisezioni_assoluto(f,a,b,tol):
         c=(a+b)/2
         fc=f(c)
         if fc==0:
-            return c, it
+            return c,it
         elif fa*fc<0:
             b=c
         else:
