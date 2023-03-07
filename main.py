@@ -8,7 +8,7 @@ def showFunction(f):
     xlist = numpy.linspace(-10, 10, num=10000)
     ylist = f(xlist)
     matplotlib.pyplot.figure(num=100, dpi=500)
-    matplotlib.pyplot.plot(xlist, ylist, label="Funzione")
+    matplotlib.pyplot.plot(xlist, ylist, label="Funzione f")
     matplotlib.pyplot.title("GRAFICO DI F")
     matplotlib.pyplot.ylabel("ASSE DELLE Y")
     matplotlib.pyplot.xlabel("ASSE DELLE X")
