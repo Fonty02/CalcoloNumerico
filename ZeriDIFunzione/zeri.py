@@ -30,7 +30,7 @@ def bisezioni_assoluto(f, a, b, tol):
     except Exception:
         raise
     it = 0
-    while b - a > tol and it < itmax:
+    while it < itmax:
         it += 1
         c = (a + b) / 2
         fc = f(c)
