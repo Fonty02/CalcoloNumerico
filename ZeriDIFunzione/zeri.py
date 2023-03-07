@@ -1,7 +1,7 @@
 from numpy import *
 
 
-def bisezioni_assoluto(f,a,b,tol):
+def bisezioni_assoluto(f, a, b, tol):
     """
     Metodo delle successive bisezioni
     ---------------------------------
@@ -21,36 +21,32 @@ def bisezioni_assoluto(f,a,b,tol):
     c: uno zero di f
     it: numero di iterate eseguite
     """
-    itmax=ceil(log2((b-a)/tol))
-    fa=f(a)
-    fb=f(b)
+    itmax = ceil(log2((b - a) / tol))
+    fa = f(a)
+    fb = f(b)
     try:
-        if fa*fb>=0:
+        if fa * fb >= 0:
             raise Exception("Intervallo non valido (la funzione non cambia di segno)")
     except Exception:
         raise
-    it=0
-    while b-a>tol and it<itmax:
-        it+=1
-        c=(a+b)/2
-        fc=f(c)
-        if fc==0:
-            return c,it
-        elif fa*fc<0:
-            b=c
+    it = 0
+    while b - a > tol and it < itmax:
+        it += 1
+        c = (a + b) / 2
+        fc = f(c)
+        if fc == 0:
+            return c, it
+        elif fa * fc < 0:
+            b = c
         else:
-            a=c
-            fa=fc
-    if (b-a)>tol:
+            a = c
+            fa = fc
+    if (b - a) > tol:
         print("Precisione non raggiunta, errore assoluto")
-    return c,it
+    return c, it
 
 
-
-
-
-
-def bisezioni_relatvivo(f,a,b,tol,itmax):
+def bisezioni_relatvivo(f, a, b, tol, itmax):
     """
     Metodo delle successive bisezioni
     ---------------------------------
@@ -77,31 +73,31 @@ def bisezioni_relatvivo(f,a,b,tol,itmax):
 
     Non utilizzabile se a=0 OR b=0
     """
-    fa=f(a)
-    fb=f(b)
+    fa = f(a)
+    fb = f(b)
     try:
-        if fa*fb>=0:
+        if fa * fb >= 0:
             raise Exception("Intervallo non valido (la funzione non cambia di segno)")
     except Exception:
         raise
-    it=0
-    while ((b-a)/min(abs(a),abs(b))) > tol and it<itmax:
-        it+=1
-        c=(a+b)/2
-        fc=f(c)
-        if fc==0:
-            return c,it
-        elif fa*fc<0:
-            b=c
+    it = 0
+    while ((b - a) / min(abs(a), abs(b))) > tol and it < itmax:
+        it += 1
+        c = (a + b) / 2
+        fc = f(c)
+        if fc == 0:
+            return c, it
+        elif fa * fc < 0:
+            b = c
         else:
-            a=c
-            fa=fc
-    if (b-a)>tol:
+            a = c
+            fa = fc
+    if (b - a) > tol:
         print("Precisione non raggiunta, errore relativo")
-    return c,it
+    return c, it
 
 
-def bisezioni_misto(f,a,b,tol,itmax):
+def bisezioni_misto(f, a, b, tol, itmax):
     """
     Metodo delle successive bisezioni
     ---------------------------------
@@ -122,29 +118,29 @@ def bisezioni_misto(f,a,b,tol,itmax):
     c: uno zero di f
     it: numero di iterate eseguite
     """
-    fa=f(a)
-    fb=f(b)
+    fa = f(a)
+    fb = f(b)
     try:
-        if fa*fb>=0:
+        if fa * fb >= 0:
             raise Exception("Intervallo non valido (la funzione non cambia di segno)")
     except Exception:
         raise
-    it=0
-    while ((b-a)/(1+min(abs(a),abs(b))))>tol and it<itmax:
-        it+=1
-        c=(a+b)/2
-        fc=f(c)
-        if fc==0:
-            return c,it
-        elif fa*fc<0:
-            b=c
+    it = 0
+    while ((b - a) / (1 + min(abs(a), abs(b)))) > tol and it < itmax:
+        it += 1
+        c = (a + b) / 2
+        fc = f(c)
+        if fc == 0:
+            return c, it
+        elif fa * fc < 0:
+            b = c
         else:
-            a=c
-            fa=fc
-    if (b-a)>tol:
+            a = c
+            fa = fc
+    if (b - a) > tol:
         print("Precisione non raggiunta, errore misto")
-    return c,it
+    return c, it
 
 
 def f(x):
-    return x-math.cos(x)
+    return x - math.cos(x)
