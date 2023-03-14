@@ -4,19 +4,29 @@ import numpy
 
 
 
-def showFunction(f):
-    xlist = numpy.linspace(-10, 10, num=10000)
-    ylist = f(xlist)
-    matplotlib.pyplot.figure(num=100, dpi=500)
-    matplotlib.pyplot.plot(xlist, ylist, label="Funzione f")
-    matplotlib.pyplot.title("GRAFICO DI F")
-    matplotlib.pyplot.ylabel("ASSE DELLE Y")
-    matplotlib.pyplot.xlabel("ASSE DELLE X")
+def showFunction(f,s_range = -20, e_range = 20):
+    plot = numpy.linspace(s_range, e_range)
+
+    # setting the axes at the centre
+    fig = matplotlib.pyplot.figure()
+    ax = fig.add_subplot(1, 1, 1)
+    ax.spines['left'].set_position('center')
+    ax.spines['bottom'].set_position('zero')
+    ax.spines['right'].set_color('none')
+    ax.spines['top'].set_color('none')
+    ax.xaxis.set_ticks_position('bottom')
+    ax.yaxis.set_ticks_position('left')
+
+    # plot the function
+    matplotlib.pyplot.plot(plot, f(plot), 'r')
+    matplotlib.pyplot.grid()
+    # show the plot
     matplotlib.pyplot.show()
 
 
 print("ASSOLUTO = " + str(bisezioni_assoluto(f, 0.0000000001, pi / 2, 1e-10)))
 print("RELATIVO = " + str(bisezioni_relatvivo(f, 0.0000000001, pi / 2, 1e-10, 10000)))
 print("MISTO = " + str(bisezioni_misto(f, 0.0000000001, pi / 2, 1e-10, 10000)))
+print("NEWTON = "+str(newton(f,0.1,)))
 
 showFunction(f)
