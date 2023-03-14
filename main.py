@@ -18,7 +18,7 @@ def showFunction(f,s_range = -20, e_range = 20):
     ax.yaxis.set_ticks_position('left')
 
     # plot the function
-    matplotlib.pyplot.plot(plot, f(plot), 'r')
+    matplotlib.pyplot.plot(plot, f(plot),'r')
     matplotlib.pyplot.grid()
     # show the plot
     matplotlib.pyplot.show()
