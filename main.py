@@ -4,7 +4,7 @@ import numpy
 
 
 
-def showFunction(f,s_range = -20, e_range = 20):
+def showFunction(f,s_range = -3, e_range = 3):
     plot = numpy.linspace(s_range, e_range)
 
     # setting the axes at the centre
@@ -27,6 +27,7 @@ def showFunction(f,s_range = -20, e_range = 20):
 print("ASSOLUTO = " + str(bisezioni_assoluto(f, 0.0000000001, pi / 2, 1e-10)))
 print("RELATIVO = " + str(bisezioni_relatvivo(f, 0.0000000001, pi / 2, 1e-10, 10000)))
 print("MISTO = " + str(bisezioni_misto(f, 0.0000000001, pi / 2, 1e-10, 10000)))
-print("NEWTON = "+str(newton(f,0.1,)))
+print("NEWTON = "+str(newton(f,pi/2,1e-10, 10000)))
+print("DIREZIONE COSTANTE ="+str(direzioneCostante(f,pi/2,0.5)))
 
-showFunction(f)
+#showFunction(f)

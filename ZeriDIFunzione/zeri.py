@@ -158,7 +158,7 @@ def newton(f, x0, tol=1e-10, itmax=100):
 
       tol: precisione richiesta
 
-      itmax: numero assimo di iterate consentite
+      itmax: numero massimo di iterate consentite
 
     Dati di output
     --------------
@@ -172,13 +172,24 @@ def newton(f, x0, tol=1e-10, itmax=100):
     it = 0  # contatore di iterate
     while not (arresto) and it < itmax:
         it = it + 1
-        x1 = x0 - f(x0) / f(x0, 1)
+        x1 = x0 - f(x0) / f(x0, 1)  # 1 -f(x0)/f'(x0)
         arresto = abs(x1 - x0) < tol
         x0 = x1
     if not (arresto):
         print('Attenzione: precisione non raggiunta')
     return x1, it
 
+def direzioneCostante(f,x0,m,tol=1e-10,itmax=1000):
+    arresto=False
+    it=0
+    while not(arresto) and it<itmax:
+        it+=1
+        x1=x0-m*f(x0)
+        arresto=abs(x1-x0)<tol
+        x0=x1
+    if not(arresto):
+        print("Precisione non raggiunta")
+    return x1,it
 def f(x,ord=0):
     if ord==0:
         y=x-cos(x)
