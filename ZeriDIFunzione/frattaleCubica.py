@@ -1,11 +1,57 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Sun Oct 16 23:03:41 2016
 
-@author: felix
-"""
 from numpy import *
 from pylab import *  # modulo per le funzioni grafiche
+
+
+
+
+def cubica(z, ord=0):
+    if ord == 0:
+        w = z ** 3 - 1
+    elif ord == 1:
+        w = 3 * z ** 2
+    else:
+        print("secondo argomento non definito")
+    return w
+
+
+def newton(f, x0, tol=1e-10, itmax=1000):
+    """
+    Metodo ddi Newton
+    ---------------------------------
+    Sintassi
+    --------
+      [x1, it]=newton(f,x0,tol,itmax)
+
+    Dati di input
+    -------------
+      f: funzione di cui calcolare uno zero
+
+      x0: stima iniziale dello zero di f
+
+      tol: precisione richiesta
+
+      itmax: numero assimo di iterate consentite
+
+    Dati di output
+    --------------
+      x1: approssimazione di uno zero di f(x)
+
+      it: numero di iterate eseguite
+
+    Autore: F. Iavernaro
+    """
+    arresto = False
+    it = 0  # contatore di iterate
+    while not (arresto) and it < itmax:
+        it = it + 1
+        x1 = x0 - f(x0) / f(x0, 1)
+        arresto = abs(x1 - x0) < tol
+        x0 = x1
+    if not (arresto):
+        print('Attenzione: precisione non raggiunta')
+    return x1, it
+
 
 
 def frattale_cubica(xmin=-3.0, xmax=3.0, ymin=-3.0, ymax=3.0):
@@ -70,51 +116,3 @@ def frattale_cubica(xmin=-3.0, xmax=3.0, ymin=-3.0, ymax=3.0):
     ylabel("Im(c)")
     show()
     return Z
-
-
-def cubica(z, ord=0):
-    if ord == 0:
-        w = z ** 3 - 1
-    elif ord == 1:
-        w = 3 * z ** 2
-    else:
-        print("secondo argomento non definito")
-    return w
-
-
-def newton(f, x0, tol=1e-10, itmax=1000):
-    """
-    Metodo ddi Newton
-    ---------------------------------
-    Sintassi
-    --------
-      [x1, it]=newton(f,x0,tol,itmax)
-
-    Dati di input
-    -------------
-      f: funzione di cui calcolare uno zero
-
-      x0: stima iniziale dello zero di f
-
-      tol: precisione richiesta
-
-      itmax: numero assimo di iterate consentite
-
-    Dati di output
-    --------------
-      x1: approssimazione di uno zero di f(x)
-
-      it: numero di iterate eseguite
-
-    Autore: F. Iavernaro
-    """
-    arresto = False
-    it = 0  # contatore di iterate
-    while not (arresto) and it < itmax:
-        it = it + 1
-        x1 = x0 - f(x0) / f(x0, 1)
-        arresto = abs(x1 - x0) < tol
-        x0 = x1
-    if not (arresto):
-        print('Attenzione: precisione non raggiunta')
-    return x1, it

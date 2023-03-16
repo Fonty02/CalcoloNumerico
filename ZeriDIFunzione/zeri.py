@@ -1,9 +1,25 @@
 from numpy import *
 
 
+def f(x,ord=0):
+    """
+
+    :param x: valore dell'incognita da valutare
+    :param ord: ordine della funzione
+    :return: valore della funzione valutata in x
+    """
+    if ord==0:
+        y=x-cos(x)
+    elif ord==1:
+        y=1+sin(x)
+    else:
+        print('ordine di derivazione non definito')
+        return
+    return y
+
 def bisezioni_assoluto(f, a, b, tol):
     """
-    Metodo delle successive bisezioni
+    Metodo delle successive bisezioni con errore assoluto come criterio di stop
     ---------------------------------
     Sintassi
     -------------
@@ -48,7 +64,7 @@ def bisezioni_assoluto(f, a, b, tol):
 
 def bisezioni_relatvivo(f, a, b, tol, itmax):
     """
-    Metodo delle successive bisezioni
+    Metodo delle successive bisezioni con errore relativo come criterio di stop
     ---------------------------------
     Sintassi
     -------------
@@ -99,7 +115,7 @@ def bisezioni_relatvivo(f, a, b, tol, itmax):
 
 def bisezioni_misto(f, a, b, tol, itmax):
     """
-    Metodo delle successive bisezioni
+    Metodo delle successive bisezioni con errore misto come criterio di stop
     ---------------------------------
     Sintassi
     -------------
@@ -144,7 +160,7 @@ def bisezioni_misto(f, a, b, tol, itmax):
 
 def newton(f, x0, tol=1e-10, itmax=100):
     """
-    Metodo delle successive bisezioni
+    Metodo di netwon per lo zero di funzioni
     ---------------------------------
     Sintassi
     --------
@@ -166,7 +182,6 @@ def newton(f, x0, tol=1e-10, itmax=100):
 
       it: numero di iterate eseguite
 
-    Autore: F. Iavernaro
     """
     arresto = False
     it = 0  # contatore di iterate
@@ -180,6 +195,32 @@ def newton(f, x0, tol=1e-10, itmax=100):
     return x1, it
 
 def direzioneCostante(f,x0,m,tol=1e-10,itmax=1000):
+    """
+    Metodo della direzione costante per lo zero di funzione
+    ---------------------------------
+    Sintassi
+    --------
+      alpha=direzioneCostante(f,x0,tol,itmax)
+
+    Dati di input
+    -------------
+      f: funzione di cui calcolare uno zero
+
+      x0: stima iniziale dello zero di f
+
+      tol: precisione richiesta
+
+      itmax: numero massimo di iterate consentite
+
+      m: coefficiente angola della funzione iteratrice
+
+    Dati di output
+    --------------
+      x1: approssimazione di uno zero di f(x)
+
+      it: numero di iterate eseguite
+
+    """
     arresto=False
     it=0
     while not(arresto) and it<itmax:
@@ -190,15 +231,44 @@ def direzioneCostante(f,x0,m,tol=1e-10,itmax=1000):
     if not(arresto):
         print("Precisione non raggiunta")
     return x1,it
-def f(x,ord=0):
-    if ord==0:
-        y=x-cos(x)
-    elif ord==1:
-        y=1+sin(x)
-    else:
-        print('ordine di derivazione non definito')
-        return
-    return y
 
 
+
+def newtonModificato(f, x0, tol=1e-10, itmax=100):
+    """
+    Metodo di Newton modificato (ovvero sfruttando la convergenza quadratica della direzione costante) per gli zeri di funzione
+    ---------------------------------
+    Sintassi
+    --------
+      alpha=direzioneCostante(f,x0,tol,itmax)
+
+    Dati di input
+    -------------
+      f: funzione di cui calcolare uno zero
+
+      x0: stima iniziale dello zero di f
+
+      tol: precisione richiesta
+
+      itmax: numero massimo di iterate consentite
+
+
+    Dati di output
+    --------------
+      x1: approssimazione di uno zero di f(x)
+
+      it: numero di iterate eseguite
+
+    """
+    arresto=False
+    it=0
+    m=1/f(x0,1)
+    while not(arresto) and it<itmax:
+        it+=1
+        x1=x0-m*f(x0)
+        arresto=abs(x1-x0)<tol
+        x0=x1
+    if not(arresto):
+        print("Precisione non raggiunta")
+    return x1,it
 

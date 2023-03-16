@@ -24,10 +24,11 @@ def showFunction(f,s_range = -3, e_range = 3):
     matplotlib.pyplot.show()
 
 
-print("ASSOLUTO = " + str(bisezioni_assoluto(f, 0.0000000001, pi / 2, 1e-10)))
-print("RELATIVO = " + str(bisezioni_relatvivo(f, 0.0000000001, pi / 2, 1e-10, 10000)))
-print("MISTO = " + str(bisezioni_misto(f, 0.0000000001, pi / 2, 1e-10, 10000)))
-print("NEWTON = "+str(newton(f,pi/2,1e-10, 10000)))
-print("DIREZIONE COSTANTE ="+str(direzioneCostante(f,pi/2,0.5)))
+print("ASSOLUTO = " + str(bisezioni_assoluto(f, 0.0000000001, pi / 4, 1e-10)))
+print("RELATIVO = " + str(bisezioni_relatvivo(f, 0.0000000001, pi / 4, 1e-10, 10000)))
+print("MISTO = " + str(bisezioni_misto(f, 0.0000000001, pi / 4, 1e-10, 10000)))
+print("NEWTON = "+str(newton(f,pi/4,1e-10, 10000)))
+print("DIREZIONE COSTANTE ="+str(direzioneCostante(f,pi/4,0.5)))
+print("NEWTON MODIFICATO ="+str(newtonModificato(f,pi/4)))
 
-#showFunction(f)
+showFunction(f)
