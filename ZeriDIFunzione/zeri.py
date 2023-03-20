@@ -17,7 +17,7 @@ def f(x,ord=0):
         return
     return y
 
-def bisezioni_assoluto(f, a, b, tol):
+def bisezioni_assoluto(f, a, b, tol=1e-10):
     """
     Metodo delle successive bisezioni con errore assoluto come criterio di stop
     ---------------------------------
@@ -62,7 +62,7 @@ def bisezioni_assoluto(f, a, b, tol):
     return c, it
 
 
-def bisezioni_relatvivo(f, a, b, tol, itmax):
+def bisezioni_relatvivo(f, a, b, tol=1e-10,itmax=100):
     """
     Metodo delle successive bisezioni con errore relativo come criterio di stop
     ---------------------------------
@@ -113,7 +113,7 @@ def bisezioni_relatvivo(f, a, b, tol, itmax):
     return c, it
 
 
-def bisezioni_misto(f, a, b, tol, itmax):
+def bisezioni_misto(f, a, b, tol=1e-10,itmax=100):
     """
     Metodo delle successive bisezioni con errore misto come criterio di stop
     ---------------------------------
@@ -268,6 +268,86 @@ def newtonModificato(f, x0, tol=1e-10, itmax=100):
         x1=x0-m*f(x0)
         arresto=abs(x1-x0)<tol
         x0=x1
+    if not(arresto):
+        print("Precisione non raggiunta")
+    return x1,it
+
+
+def metodoDelleSecantiRelativo(f,x0,x1,tol=1e-10,itmax=100):
+    """
+    Metodo delle secanti per gli zeri di funzione
+    ---------------------------------
+    Sintassi
+    --------
+      alpha=secanti(f,x0,x1,tol,itmax)
+
+    Dati di input
+    -------------
+      f: funzione di cui calcolare uno zero
+
+      x0: stima iniziale dello zero di f
+      x1: seconda stima dello zero
+
+      tol: precisione richiesta
+
+      itmax: numero massimo di iterate consentite
+
+
+    Dati di output
+    --------------
+      x2: approssimazione di uno zero di f(x)
+
+      it: numero di iterate eseguite
+
+    """
+    arresto=False
+    it=0
+    while not(arresto) and it<itmax:
+        it+=1
+        x2=x1 - f(x1)/((f(x1)-f(x0))/(x1-x0))
+        arresto=abs((x2-x1)/(x2))<tol
+        x0=x1
+        x1=x2
+    if not(arresto):
+        print("Precisione non raggiunta")
+    return x1,it
+
+
+def metodoDelleSecantiMisto(f,x0,x1,tol=1e-10,itmax=100):
+    """
+    Metodo delle secanti per gli zeri di funzione
+    ---------------------------------
+    Sintassi
+    --------
+      alpha=secanti(f,x0,x1,tol,itmax)
+
+    Dati di input
+    -------------
+      f: funzione di cui calcolare uno zero
+
+      x0: stima iniziale dello zero di f
+      x1: seconda stima dello zero
+
+      tol: precisione richiesta
+
+      itmax: numero massimo di iterate consentite
+
+
+    Dati di output
+    --------------
+      x2: approssimazione di uno zero di f(x)
+
+      it: numero di iterate eseguite
+
+    """
+    arresto=False
+    it=0
+    while not(arresto) and it<itmax:
+        it+=1
+        x2=x1 - f(x1)/((f(x1)-f(x0))/(x1-x0))
+        arresto=abs((x2-x1))/(1+abs(x2))<tol
+        x0=x1
+        x1=x2
     if not(arresto):
         print("Precisione non raggiunta")
     return x1,it
