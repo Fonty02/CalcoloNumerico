@@ -302,12 +302,16 @@ def metodoDelleSecantiRelativo(f,x0,x1,tol=1e-10,itmax=100):
     """
     arresto=False
     it=0
+    fx0=f(x0)
+    fx1=f(x1)
     while not(arresto) and it<itmax:
         it+=1
-        x2=x1 - f(x1)/((f(x1)-f(x0))/(x1-x0))
+        x2=x1 - (fx1/((fx1-fx0)/(x1-x0)))
         arresto=abs((x2-x1)/(x2))<tol
         x0=x1
         x1=x2
+        fx0=fx1
+        fx1=f(x1)
     if not(arresto):
         print("Precisione non raggiunta")
     return x1,it
@@ -342,12 +346,61 @@ def metodoDelleSecantiMisto(f,x0,x1,tol=1e-10,itmax=100):
     """
     arresto=False
     it=0
+    fx0 = f(x0)
+    fx1 = f(x1)
     while not(arresto) and it<itmax:
         it+=1
-        x2=x1 - f(x1)/((f(x1)-f(x0))/(x1-x0))
+        x2 = x1 - (fx1 / ((fx1 - fx0) / (x1 - x0)))
         arresto=abs((x2-x1))/(1+abs(x2))<tol
         x0=x1
         x1=x2
+        fx0 = fx1
+        fx1 = f(x1)
+    if not(arresto):
+        print("Precisione non raggiunta")
+    return x1,it
+
+
+
+def metodoDelleSecantiAssoluto(f,x0,x1,tol=1e-10,itmax=100):
+    """
+    Metodo delle secanti per gli zeri di funzione
+    ---------------------------------
+    Sintassi
+    --------
+      alpha=secanti(f,x0,x1,tol,itmax)
+
+    Dati di input
+    -------------
+      f: funzione di cui calcolare uno zero
+
+      x0: stima iniziale dello zero di f
+      x1: seconda stima dello zero
+
+      tol: precisione richiesta
+
+      itmax: numero massimo di iterate consentite
+
+
+    Dati di output
+    --------------
+      x2: approssimazione di uno zero di f(x)
+
+      it: numero di iterate eseguite
+
+    """
+    arresto=False
+    it=0
+    fx0 = f(x0)
+    fx1 = f(x1)
+    while not(arresto) and it<itmax:
+        it+=1
+        x2 = x1 - (fx1 / ((fx1 - fx0) / (x1 - x0)))
+        arresto=abs(x2-x1)<tol
+        x0=x1
+        x1=x2
+        fx0 = fx1
+        fx1 = f(x1)
     if not(arresto):
         print("Precisione non raggiunta")
     return x1,it
