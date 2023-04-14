@@ -1,12 +1,86 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Nov 23 08:16:36 2020
-
-@author: felix
-"""
-
-from numpy import * 
+import numpy.linalg
+from numpy import *
 from scipy import *
+
+def sommaMatriciale(A,B):
+    """
+    Somma matriciale
+    ----------------
+    INPUT
+    A: matrice m x n
+    B: matrice m x n
+    ----------------
+    OUTPUT
+    C: matrice m x n
+    """
+    [m,n]=shape(A)
+    [p,q]=shape(B)
+    if m!=p or n!=q:
+        raise ValueError('Dimensioni non compatibili')
+    C=zeros(shape=(m,n),dtype=type(A[0,0]))
+    for i in range(0,m):
+        for j in range(0,n):
+            C[i,j]=A[i,j]+B[i,j]
+    return C
+def prodottoMatriciale(A,B):
+    """
+    Prodotto matriciale
+    -------------------
+    INPUT
+    A: matrice m x n
+    B: matrice n x p
+    -------------------
+    OUTPUT
+    C: matrice m x p
+
+    """
+    [m,n]=shape(A)
+    [p,q]=shape(B)
+    if n!=p:
+        raise ValueError('Dimensioni non compatibili')
+    C=zeros(shape=(m,q),dtype=type(A[0,0]))
+    for i in range(0,m):
+        for j in range(0,q):
+            for k in range(0,n):
+                C[i,j]+=A[i,k]*B[k,j]
+    return C
+
+def trasposta(A):
+    """
+    Trasposta di una matrice
+    ------------------------
+    INPUT
+    A: matrice m x n
+    ------------------------
+    OUTPUT
+    C: matrice n x m
+    """
+    [m,n]=shape(A)
+    C=zeros(shape=(n,m),dtype=type(A[0,0]))
+    for i in range(0,m):
+        for j in range(0,n):
+            C[j,i]=A[i,j]
+    return C
+
+def sottoMatricePrincipaleDiTesta(A,k):
+    """
+    Sotto matrice quadrata di testa
+    -------------------------------
+    INPUT
+    A: matrice m x n
+    k: intero
+    -------------------------------
+    OUTPUT
+    C: matrice k x k
+    """
+    [m,n]=shape(A)
+    if k>m or k>n or k<1:
+        raise ValueError('Dimensioni non compatibili')
+    C=zeros(shape=(k,k),dtype=type(A[0,0]))
+    for i in range(0,k):
+        for j in range(0,k):
+            C[i,j]=A[i,j]
+    return C
 
 def laplace(A):
     """
@@ -23,6 +97,51 @@ def laplace(A):
             A1j=delete(A1j,j,axis=1)
             d=d+(-1)**(j)*A[0,j]*laplace(A1j)
     return d
+
+def matriceAggiunta(A):
+    """
+    Calcolo della matrice aggiunta di una matrice quadrata
+    """
+    [m,n]=shape(A)
+    if m!=n:
+        raise ValueError('Matrice non quadrata')
+    B=zeros(shape=(m,n),dtype=type(A[0,0]))
+    for i in range(0,m):
+        for j in range(0,n):
+            Aij=delete(A,i,0)
+            Aij=delete(Aij,j,1)
+            Aji=transpose(Aij)
+            B[j,i]=(-1)**(i+j)*laplace(Aji)
+    return B
+
+def matriceInversa(A):
+    """
+    Calcolo della matrice inversa di una matrice quadrata
+    """
+    [m,n]=shape(A)
+    if m!=n:
+        raise ValueError('Matrice non quadrata')
+    d=laplace(A)
+    B=matriceAggiunta(A)
+    return B/d
+
+
+def metodoCramer(A,b):
+    """
+    Metodo di Cramer per la risoluzione di sistemi lineari
+    """
+    [m,n]=shape(A)
+    if m!=n:
+        raise ValueError('Matrice non quadrata')
+    d=laplace(A)
+    if d==0:
+        raise ValueError('Matrice non invertibile')
+    x=zeros(shape=(n,1))
+    for i in range(0,n):
+        Ai=copy(A) # copia di A
+        Ai[:,i]=b # sostituzione della i-esima colonna di A con b
+        x[i]=laplace(Ai)/d # calcolo della i-esima componente di x
+    return x
 
 def triang_sup(A,b):
     """
@@ -43,7 +162,7 @@ def triang_sup(A,b):
     x: vettore soluzione del sistema Ax=b
     """
     [m,n]=shape(A)# oppure n=len(b)
-    x=zeros(shape=(n,1))# preallochiamo la memoria per x
+    x=zeros(shape=(n,1),dtype=A[0,0])# preallochiamo la memoria per x
     tol=1e-15
     for i in range(n-1,-1,-1):
         if abs(A[i,i])<tol:
@@ -85,9 +204,15 @@ def fattlu(A):
             L[i,k]=-mik
     U=triu(A) # estrae la parte triang. sup. di A
     return L,U             
-    
-    
-    
+
+#write a main that uses fattlu
+
+
+
+A = array([[2, 1, 0], [1, 5, 2], [0, 0, 1]])
+b=array([3,1,4])
+print(metodoCramer(A,b))
+exit(0)
     
     
     
