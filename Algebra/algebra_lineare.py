@@ -1,4 +1,5 @@
 import numpy.linalg
+import scipy.linalg
 from numpy import *
 from scipy import *
 
@@ -266,11 +267,33 @@ def fattlu(A):
             L[i,k]=-mik
     U=triu(A) # estrae la parte triang. sup. di A
     return L,U             
+def determinanteLU(A):
+    L,U=fattlu(A)
+    return laplace(prodottoMatriciale(L,U))
 
-A = array([[1, 0, 0], [2, 5, 0], [3, 6, 9]])
-b=array([3,1,4])
-print(metodoCramer(A,b))
-print(triang_inf(A,b))
+
+def risoluzioneSistemaLU(A,b):
+    """
+    Risoluzione di un sistema lineare sfruttando la fattorizzazioen LU
+    """
+    L,U=fattlu(A)
+    y=triang_inf(L,b)
+    x=triang_sup(U,y)
+    sol=zeros(shape(x)[0])
+    for i in range(0,shape(x)[0]):
+        sol[i]=x[i,0]
+    return sol
+
+
+
+
+
+
+A = array([[1, -2, 0,1], [-1, 1, 2,0], [2, -3, 0,2],[-1,2,0,-2]])
+b=array([-1,0,1,2])
+print(scipy.linalg.solve(A,b))
+print(risoluzioneSistemaLU(A,b))
+print(risoluzioneMetodoGauss(A,b))
 exit(0)
     
     
