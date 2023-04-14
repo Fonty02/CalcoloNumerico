@@ -143,6 +143,19 @@ def metodoCramer(A,b):
         x[i]=laplace(Ai)/d # calcolo della i-esima componente di x
     return x
 
+
+def isTriangSup(A):
+    """
+    Verifica se una matrice è triangolare superiore
+    """
+    m,n=shape(A)
+    if m!=n:
+        raise ValueError("LA MATRICE NON QUADRATA")
+    for i in range(1,n):
+        for j in range(0,i):
+            if A[i,j]!=0: return False
+    return True
+
 def triang_sup(A,b):
     """
     Algoritmo di sostituzione all'indietro
@@ -161,8 +174,10 @@ def triang_sup(A,b):
     --------------------------------------
     x: vettore soluzione del sistema Ax=b
     """
+    if (not isTriangSup(A)):
+        raise ValueError('Matrice non triangolare superiore')
     [m,n]=shape(A)# oppure n=len(b)
-    x=zeros(shape=(n,1),dtype=A[0,0])# preallochiamo la memoria per x
+    x=zeros(shape=(n,1))# preallochiamo la memoria per x
     tol=1e-15
     for i in range(n-1,-1,-1):
         if abs(A[i,i])<tol:
@@ -172,6 +187,53 @@ def triang_sup(A,b):
             for j in range(i+1,n):
                 somma=somma+A[i,j]*x[j]
             x[i]=(b[i]-somma)/A[i,i]
+    return x
+
+
+def isTriangInf(A):
+    """
+    Verifica se una matrice è triangolare inferiore
+    """
+    m, n = shape(A)
+    if m != n:
+        raise ValueError("LA MATRICE NON QUADRATA")
+    for i in range(0, n):
+        for j in range(1, i):
+            if A[-i, -j] != 0: return False
+    return True
+
+
+def triang_inf(A, b):
+    """
+    Algoritmo di sostituzione in avanti
+    per la risoluzione dei sistemi lineari
+    triangolari inferiore
+
+    --------------------------------------
+
+    INPUT
+    --------------------------------------
+    A: matrice dei coefficienti triangolare inferiori
+
+    b: vettore dei termini noti
+
+    OUTPUT
+    --------------------------------------
+    x: vettore soluzione del sistema Ax=b
+    """
+    if (not isTriangInf(A)):
+        raise ValueError('Matrice non triangolare inferiore')
+    [m, n] = shape(A)  # oppure n=len(b)
+    x = zeros(shape=(n, 1))  # preallochiamo la memoria per x
+    tol = 1e-15
+    for i in range(0, n):
+        if abs(A[i, i]) < tol:
+            raise ValueError('Matrice singolare')
+        else:
+            somma = 0
+            for j in range(0, i):
+                somma = somma + A[i, j] * x[j]
+            x[i] = (b[i] - somma) / A[i, i]
     return x
 
 
@@ -205,13 +267,10 @@ def fattlu(A):
     U=triu(A) # estrae la parte triang. sup. di A
     return L,U             
 
-#write a main that uses fattlu
-
-
-
-A = array([[2, 1, 0], [1, 5, 2], [0, 0, 1]])
+A = array([[1, 0, 0], [2, 5, 0], [3, 6, 9]])
 b=array([3,1,4])
 print(metodoCramer(A,b))
+print(triang_inf(A,b))
 exit(0)
     
     
