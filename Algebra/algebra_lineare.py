@@ -2,6 +2,7 @@ import numpy.linalg
 import scipy.linalg
 from numpy import *
 from scipy import *
+import numpy
 
 def sommaMatriciale(A,B):
     """
@@ -287,13 +288,16 @@ def risoluzioneSistemaLU(A,b):
 
 
 
-
-
-A = array([[1, -2, 0,1], [-1, 1, 2,0], [2, -3, 0,2],[-1,2,0,-2]])
-b=array([-1,0,1,2])
+"""
+A = array([[1, -2, 321,1], [-1, 1, 2,12], [2, -3, 32,2],[-1,2,-312,-2]])
+b=array([-1,342,1,2])
 print(scipy.linalg.solve(A,b))
 print(risoluzioneSistemaLU(A,b))
-print(risoluzioneMetodoGauss(A,b))
+"""
+A=numpy.array([[1,2,3],[4,5,6],[7,8,9]])
+B=A[0:2,0:2] # estrae la prima riga e la prima colonna e crea la sommomatrice
+print(B)
+print(A)
 exit(0)
     
     
