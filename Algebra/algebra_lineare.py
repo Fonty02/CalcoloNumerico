@@ -136,8 +136,8 @@ def metodoCramer(A,b):
     if m!=n:
         raise ValueError('Matrice non quadrata')
     d=laplace(A)
-    if d==0:
-        raise ValueError('Matrice non invertibile')
+    if abs(d)<1e-15:
+        raise ValueError('Matrice singolare')
     x=zeros(shape=(n,1))
     for i in range(0,n):
         Ai=copy(A) # copia di A
@@ -155,7 +155,7 @@ def isTriangSup(A):
         raise ValueError("LA MATRICE NON QUADRATA")
     for i in range(1,n):
         for j in range(0,i):
-            if A[i,j]!=0: return False
+            if abs(A[i,j])>1e-15: return False
     return True
 
 def triang_sup(A,b):
@@ -201,7 +201,7 @@ def isTriangInf(A):
         raise ValueError("LA MATRICE NON QUADRATA")
     for i in range(0, n):
         for j in range(1, i):
-            if A[-i, -j] != 0: return False
+            if abs(A[-i, -j])> 1e-15 : return False
     return True
 
 
@@ -296,8 +296,9 @@ print(risoluzioneSistemaLU(A,b))
 """
 A=numpy.array([[1,2,3],[4,5,6],[7,8,9]])
 B=A[0:2,0:2] # estrae la prima riga e la prima colonna e crea la sommomatrice
-print(B)
-print(A)
+print(laplace(A))
+print(determinanteLU(A))
+print(numpy.linalg.det(A))
 exit(0)
     
     
