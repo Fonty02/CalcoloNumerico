@@ -281,7 +281,6 @@ def fattlu(A):
 
 def determinanteLU(A):
     L, U = fattlu(A)
-    print(L)
     return laplace(U)
 
 
