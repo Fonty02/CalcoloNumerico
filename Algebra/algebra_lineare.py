@@ -262,20 +262,19 @@ def fattlu(A):
     """
     [m, n] = shape(A)
     if m != n:
-        print("matrice non quadrata")
-    A = copy(A)  # altrimenti sovrascriviamo la A nella shell
+        raise ValueError("matrice non quadrata")
+    A = copy(A)  # altrimenti sovrascriviamo la A nella shell, la A a sinistra diventa variabile locale perchè si ha passaggio per riferimento
     tol = 1e-15
-    L = identity(n)
-    for k in range(0, n - 1):
-        if abs(A[k, k]) < tol:
-            print("minore principale nullo")
-            return
+    L = identity(n)  #prendo la matrice identica di ordine n
+    for k in range(0, n - 1):  #gli n-1 passi da fare (per calcolare A2, A3,...,An=U)
+        if abs(A[k, k]) < tol:  #controllo che gli elementi della diagonale non siano nulli
+            raise ValueError ("minore principale nullo")
         for i in range(k + 1, n):
-            mik = -A[i, k] / A[k, k]
+            mik = -A[i, k] / A[k, k] #calcolo i moltiplicatori della matrice elementare di Gauss
             for j in range(k + 1, n):
-                A[i, j] = A[i, j] + mik * A[k, j]
-            L[i, k] = -mik
-    U = triu(A)  # estrae la parte triang. sup. di A
+                A[i, j] = A[i, j] + mik * A[k, j]  #nuova i-esima riga = vecchia i-esima + moltiplicatore per k-esami (dove sta l elemento pivotale)
+            L[i, k] = -mik #creo gia la triangolare inferiore speciale
+    U = triu(A)  # estrae la parte triang. sup. di A -> dato che non annullo a mano gli elementi delle colonne
     return L, U
 
 
