@@ -392,6 +392,46 @@ def inversaLU(A):
                 A[i,j]=A[i,j]+mik*A[k,j]
 
 
+def riduzioneScalini(A):
+    B =copy(A)
+    righe, colonne = shape(A)
+    tol = 1e-15
+    j = 0
+    i = 0
+    while i < righe - 1:
+        # TECNICA DEL PIVOT
+        zero = False
+        if abs(B[i][j]) < tol:
+            zero = True
+            for g in range(i + 1, righe):
+                if abs(B[g][j]) > tol:
+                    B[[i, g]] = B[[g, i]]
+                    zero = False
+                    break
+
+            # se sono tutti zero controlla a destra
+            if zero:
+                j = j + 1
+                while j < colonne:
+                    if abs(B[i][j]) > tol:
+                        zero = False
+                        break
+                    j = j + 1
+        if zero:
+            break
+
+        # calcolo del moltiplicatore di Gauss
+        for k in range(i + 1, righe):
+            m = -B[k][j] / B[i][j]
+
+            # calcolo nuova riga
+            for h in range(j, colonne):
+                somma = B[i][h] * m + B[k][h]
+                B[k][h] = somma
+
+        j += 1
+        i += 1
+    return B
 
 
 
@@ -399,7 +439,11 @@ def inversaLU(A):
 
 
 
-A = array([[1,-1,0], [2,1,-1], [0,-2,1]])
+
+
+
+
+A = array([[1,-2,-3,0,1,0], [-2,4,6,0,-1,2], [1,0,1,-2,1,0], [0,-2,-4,2,2,1]])
 """
 b=array([1,0,-1])
 P,L,U=scipy.linalg.lu(A)
@@ -414,9 +458,6 @@ print(U1,end="\n\n\n")
 print(linalg.det(U))
 print(linalg.det(U1))
 """
-i1=linalg.inv(A)
-i2=inversaLU(A)
-print("ORA I RISULTATI SIUM",end="\n\n")
-print(i1)
-print(i2)
+C=riduzioneScalini(A)
+print(C)
 exit(0)
