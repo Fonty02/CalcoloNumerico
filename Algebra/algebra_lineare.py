@@ -1,3 +1,4 @@
+import scipy.linalg
 from scipy import *
 from numpy import *
 
@@ -189,11 +190,10 @@ def triang_sup(A, b):
     for i in range(n - 1, -1, -1):
         if abs(A[i, i]) < tol:
             raise ValueError('Matrice singolare')
-        else:
-            somma = 0
-            for j in range(i + 1, n):
-                somma = somma + A[i, j] * x[j]
-            x[i] = (b[i] - somma) / A[i, i]
+        somma = 0
+        for j in range(i + 1, n):
+            somma = somma + A[i, j] * x[j]
+        x[i] = (b[i] - somma) / A[i, i]
     return x
 
 
@@ -307,11 +307,68 @@ def eliminazioneGauss(A,b):
     U=triu(A)
     return triang_sup(U,b)
 
+def massimoPivotParziale(A,b):
+    n, m = shape(A)
+    if n != m: raise Exception("Matrice non quadrata")
+    A = copy(A)
+    b = copy(b)
+    tol = 1e-15
+    for k in range(n - 1):
+        s=k
+        pivot=abs(A[k,k])
+        for i in range(k+1,n):
+            if abs(A[i,i])>pivot:
+                s=i
+                pivot=abs(A[i,i])
+        if s!=k:
+            A[[k,s]]=A[[s,k]]
+            b[k],b[s]=b[s],b[k]
+        for i in range(k + 1, n):
+            mik = -A[i, k] / A[k, k]
+            b[i] = b[i] + mik * b[k]
+            for j in range(k + 1, n):
+                A[i, j] = A[i, j] + mik * A[k, j]
+    U = triu(A)
+    return triang_sup(U, b)
+
+def fattLUconPivot(A):
+    n,m=shape(A)
+    if n!=m: raise Exception("Matrice non quadrata")
+    A=copy(A)
+    L=identity(n)
+    P=identity(n)
+    for k in range(n-1):
+        s = k
+        pivot = abs(A[k, k])
+        for i in range(k + 1, n):
+            if abs(A[i, i]) > pivot:
+                s = i
+                pivot = abs(A[i, i])
+        if s != k:
+            A[[k, s]] = A[[s, k]]
+            L[[k,s]]= L[[s,k]]
+            P[[k,s]]=P[[s,k]]
+        for i in range(k+1,n):
+            mik=-A[i,k]/A[k,k]
+            L[i,k]=-mik
+            for j in range(k+1,n):
+                A[i,j]=A[i,j]+mik*A[k,j]
+    U=triu(A)
+    return P,L,U
 
 
 
-A = array([[1, -2, 0,1], [-1, 1,2,0], [2, -3, 0,2],[-1,2,0,-2]])
-b=array([-1,0,1,2])
-print(linalg.solve(A,b))
-print(eliminazioneGauss(A,b))
+A = array([[1,-2,3], [-1,2,1], [2, -1,-1]])
+#b=array([1,0,-1])
+P,L,U=scipy.linalg.lu(A)
+P=transpose(P)
+P1,L1,U1=fattLUconPivot(A)
+print(P)
+print(P1,end="\n\n\n")
+print(L)
+print(L1,end="\n\n\n")
+print(U)
+print(U1,end="\n\n\n")
+print(linalg.det(U))
+print(linalg.det(U1))
 exit(0)
