@@ -383,7 +383,8 @@ def riduzioneScalini(A):
     tol = 1e-15
     j = 0
     i = 0
-    while i<righe -1:
+    trovato=True
+    while i<righe -1 and trovato:
         trovato= abs(A[i,j])>tol
         while j<colonne and not trovato:
             h = i
