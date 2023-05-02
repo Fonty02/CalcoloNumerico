@@ -1,5 +1,3 @@
-import numpy
-import scipy.linalg
 from scipy import *
 from numpy import *
 
@@ -362,7 +360,7 @@ def inversaLU(A):
     if n!=m: raise Exception("Matrice non quadrata")
     A=copy(A)
     I=identity(n)
-    inv=numpy.zeros((n,n))
+    inv=zeros((n,n))
     mik=0
     for k in range(0,n-1):
         for i in range (k+1,n):
@@ -378,60 +376,31 @@ def inversaLU(A):
     return inv
 
 
-    n,m=shape(A)
-    if n!=m: raise Exception("Matrice non quadrata")
-    A=copy(A)
-    b=copy(b)
-    tol=1e-15
-    for k in range (n-1):
-        if abs(A[k,k])<tol: raise Exception("Matrice singolare")
-        for i in range(k+1,n):
-            mik=-A[i,k]/A[k,k]
-            b[i]=b[i]+mik*b[k]
-            for j in range(k+1,n):
-                A[i,j]=A[i,j]+mik*A[k,j]
-
 
 def riduzioneScalini(A):
-    B =copy(A)
+    A =copy(A)
     righe, colonne = shape(A)
     tol = 1e-15
     j = 0
     i = 0
-    while i < righe - 1:
-        # TECNICA DEL PIVOT
-        zero = False
-        if abs(B[i][j]) < tol:
-            zero = True
-            for g in range(i + 1, righe):
-                if abs(B[g][j]) > tol:
-                    B[[i, g]] = B[[g, i]]
-                    zero = False
+    while i<righe -1:
+        trovato= abs(A[i,i])>tol
+        while j<colonne and not trovato:
+            h = i
+            while h<righe and not trovato:
+                if abs(A[h,j])>tol:
+                    trovato=True
+                    A[[h,i]]=A[[i,h]]
                     break
-
-            # se sono tutti zero controlla a destra
-            if zero:
-                j = j + 1
-                while j < colonne:
-                    if abs(B[i][j]) > tol:
-                        zero = False
-                        break
-                    j = j + 1
-        if zero:
-            break
-
-        # calcolo del moltiplicatore di Gauss
-        for k in range(i + 1, righe):
-            m = -B[k][j] / B[i][j]
-
-            # calcolo nuova riga
-            for h in range(j, colonne):
-                somma = B[i][h] * m + B[k][h]
-                B[k][h] = somma
-
-        j += 1
-        i += 1
-    return B
+                h+=1
+            if not trovato: j+=1
+        #calcoli
+        if trovato:
+            for k in range(i+1,righe):
+                A[k]=A[k]-A[i]*(A[k,j]/A[i,j])
+        i+=1
+        j+=1
+    return triu(A)
 
 def rank(A):
     C=riduzioneScalini(A)
@@ -457,21 +426,7 @@ def rank(A):
 
 
 
-A = array([[1,-2,-3,0,1,0], [-2,4,6,0,-1,2], [1,0,1,-2,1,0], [0,-2,-4,2,2,1]])
-"""
-b=array([1,0,-1])
-P,L,U=scipy.linalg.lu(A)
-P=transpose(P)
-P1,L1,U1=fattLUconPivot(A)
-print(P)
-print(P1,end="\n\n\n")
-print(L)
-print(L1,end="\n\n\n")
-print(U)
-print(U1,end="\n\n\n")
-print(linalg.det(U))
-print(linalg.det(U1))
-"""
+A = array([[1,-3,-1,1], [3,-9,-1,-4], [-2,6,4,0]])
 C=riduzioneScalini(A)
 print(C)
 print(rank(C))
