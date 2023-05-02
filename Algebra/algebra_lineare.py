@@ -384,7 +384,7 @@ def riduzioneScalini(A):
     j = 0
     i = 0
     while i<righe -1:
-        trovato= abs(A[i,i])>tol
+        trovato= abs(A[i,j])>tol
         while j<colonne and not trovato:
             h = i
             while h<righe and not trovato:
@@ -400,7 +400,6 @@ def riduzioneScalini(A):
                 A[k]=A[k]-A[i]*(A[k,j]/A[i,j])
         i+=1
         j+=1
-    else: raise Exception("Impossibile continuare")
     return triu(A)
 
 def rank(A):
