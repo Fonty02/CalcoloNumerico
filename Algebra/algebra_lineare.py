@@ -400,6 +400,7 @@ def riduzioneScalini(A):
                 A[k]=A[k]-A[i]*(A[k,j]/A[i,j])
         i+=1
         j+=1
+    else: raise Exception("Impossibile continuare")
     return triu(A)
 
 def rank(A):
