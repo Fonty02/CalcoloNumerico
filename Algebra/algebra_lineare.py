@@ -1,9 +1,5 @@
-import numpy.linalg
-import scipy.linalg
-from numpy import *
 from scipy import *
-import numpy
-
+from numpy import *
 
 def sommaMatriciale(A, B):
     """
@@ -295,17 +291,27 @@ def risoluzioneSistemaLU(A, b):
         sol[i] = x[i, 0]
     return sol
 
+def eliminazioneGauss(A,b):
+    n,m=shape(A)
+    if n!=m: raise Exception("Matrice non quadrata")
+    A=copy(A)
+    b=copy(b)
+    tol=1e-15
+    for k in range (n-1):
+        if abs(A[k,k])<tol: raise Exception("Matrice singolare")
+        for i in range(k+1,n):
+            mik=-A[i,k]/A[k,k]
+            b[i]=b[i]+mik*b[k]
+            for j in range(k+1,n):
+                A[i,j]=A[i,j]+mik*A[k,j]
+    U=triu(A)
+    return triang_sup(U,b)
 
-"""
-A = array([[1, -2, 321,1], [-1, 1, 2,12], [2, -3, 32,2],[-1,2,-312,-2]])
-b=array([-1,342,1,2])
-print(scipy.linalg.solve(A,b))
-print(risoluzioneSistemaLU(A,b))
-"""
 
-A = numpy.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
-B = A[0:2, 0:2]  # estrae la prima riga e la prima colonna e crea la sommomatrice
-print(laplace(A))
-print(determinanteLU(A))
-print(numpy.linalg.det(A))
+
+
+A = array([[1, -2, 0,1], [-1, 1,2,0], [2, -3, 0,2],[-1,2,0,-2]])
+b=array([-1,0,1,2])
+print(linalg.solve(A,b))
+print(eliminazioneGauss(A,b))
 exit(0)
