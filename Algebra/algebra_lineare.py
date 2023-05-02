@@ -433,6 +433,20 @@ def riduzioneScalini(A):
         i += 1
     return B
 
+def rank(A):
+    C=riduzioneScalini(A)
+    count=0
+    r,c=shape(C)
+    vuoto=zeros((1,c))
+    for i in range(r):
+        vuota=True
+        for j in range(c):
+            if abs(C[i,j])>1e-15:
+                vuota=False
+                break
+        if not vuota:
+            count=count+1
+    return count
 
 
 
@@ -460,4 +474,5 @@ print(linalg.det(U1))
 """
 C=riduzioneScalini(A)
 print(C)
+print(rank(C))
 exit(0)
