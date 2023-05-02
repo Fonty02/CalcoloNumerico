@@ -1,3 +1,4 @@
+import numpy
 import scipy.linalg
 from scipy import *
 from numpy import *
@@ -356,10 +357,51 @@ def fattLUconPivot(A):
     U=triu(A)
     return P,L,U
 
+def inversaLU(A):
+    n,m=shape(A)
+    if n!=m: raise Exception("Matrice non quadrata")
+    A=copy(A)
+    I=identity(n)
+    inv=numpy.zeros((n,n))
+    mik=0
+    for k in range(0,n-1):
+        for i in range (k+1,n):
+            mik=-A[i,k]/A[k,k]
+            for j in range(k+1,n):
+                A[i, j] = A[i, j] + mik * A[k, j]
+            for j in range(n):
+                I[i, j] = I[i, j] + mik * I[k, j]
+    U=triu(A)
+    print(U)
+    for i in range(n):
+        inv[:,i]=linalg.solve(U,I[:,i])
+    return inv
 
 
-A = array([[1,-2,3], [-1,2,1], [2, -1,-1]])
-#b=array([1,0,-1])
+    n,m=shape(A)
+    if n!=m: raise Exception("Matrice non quadrata")
+    A=copy(A)
+    b=copy(b)
+    tol=1e-15
+    for k in range (n-1):
+        if abs(A[k,k])<tol: raise Exception("Matrice singolare")
+        for i in range(k+1,n):
+            mik=-A[i,k]/A[k,k]
+            b[i]=b[i]+mik*b[k]
+            for j in range(k+1,n):
+                A[i,j]=A[i,j]+mik*A[k,j]
+
+
+
+
+
+
+
+
+
+A = array([[1,-1,0], [2,1,-1], [0,-2,1]])
+"""
+b=array([1,0,-1])
 P,L,U=scipy.linalg.lu(A)
 P=transpose(P)
 P1,L1,U1=fattLUconPivot(A)
@@ -371,4 +413,10 @@ print(U)
 print(U1,end="\n\n\n")
 print(linalg.det(U))
 print(linalg.det(U1))
+"""
+i1=linalg.inv(A)
+i2=inversaLU(A)
+print("ORA I RISULTATI SIUM",end="\n\n")
+print(i1)
+print(i2)
 exit(0)
