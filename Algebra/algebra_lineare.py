@@ -367,6 +367,7 @@ def inversaLU(A):
     inv=zeros((n,n))
     mik=0
     for k in range(0,n-1):
+        if abs(A[k,k])<1e-15: raise Exception("Impossibile continuare")
         for i in range (k+1,n):
             mik=-A[i,k]/A[k,k]
             for j in range(k+1,n):
@@ -374,7 +375,6 @@ def inversaLU(A):
             for j in range(n):
                 I[i, j] = I[i, j] + mik * I[k, j]
     U=triu(A)
-    print(U)
     for i in range(n):
         inv[:,i]=linalg.solve(U,I[:,i])
     return inv
@@ -400,9 +400,9 @@ def riduzioneScalini(A):
                 h+=1
             if not trovato: j+=1
         #calcoli
-        if trovato:
-            for k in range(i+1,righe):
-                A[k]=A[k]-A[i]*(A[k,j]/A[i,j])
+        if not trovato: raise Exception ("Impossibile proseguire")
+        for k in range(i+1,righe):
+            A[k]=A[k]-A[i]*(A[k,j]/A[i,j])
         i+=1
         j+=1
     return triu(A)
