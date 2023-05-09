@@ -418,7 +418,19 @@ def rank(A):
             count=count+1
     return count
 
-
+def normaMatrice(A,s):
+    if s!=1 and s!=-1 : raise("ERRORE")
+    if s==1:     A=transpose(A)
+    row,col=shape(A)
+    max=0
+    for j in range(col):
+        max+=abs(A[1,j])
+    for i in range(1,row):
+        sum=0
+        for j in range(col):
+            sum+=abs(A[i,j])
+        if sum>max: max=sum
+    return max
 
 
 
@@ -428,7 +440,8 @@ def rank(A):
 
 
 A = array([[1,-3,-1,1], [3,-9,-1,-4], [-2,6,4,0]])
-C=riduzioneScalini(A)
-print(C)
-print(rank(C))
+print(transpose(A))
+print(normaMatrice(A,1),end=" NORMA 1 \n")
+print(A)
+print(normaMatrice(A,-1), end=" NORMA INF \n")
 exit(0)
