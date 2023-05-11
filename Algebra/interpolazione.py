@@ -3,16 +3,17 @@ from scipy import *
 from numpy import *
 
 
-def Vandermond(x):
-    r=shape(x)[0]
-    c=r+1
+def Vandermonde(x):
+    r,c=shape(x)[0]+1
     V=zeros((r,c))
-    V[:,0]=ones((1,r))
+    V[:,0]=ones(1,r)
     for i in range(r):
-        for j in range(1,c):
+        for j in range(c):
             V[i,j]=x[i]**(j)
     return V
 
+def solveVandermond(x,y):
+    return linalg.solve(Vandermonde(x),y)
 
 
 def lagrange(x,y,xx):
@@ -58,4 +59,5 @@ def interpola(f,int,n):
 def f(x):
     return e**(-x)*sin(x)
 
-interpola(f,[0,pi],5)
+print(Vandermonde([1,2,3]))
+print(solveVandermond([1,2,3],[5,-3,-6]))
