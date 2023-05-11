@@ -316,9 +316,9 @@ def massimoPivotParziale(A,b):
         s=k
         pivot=abs(A[k,k])
         for i in range(k+1,n):
-            if abs(A[i,i])>pivot:
+            if abs(A[i,k])>pivot:
                 s=i
-                pivot=abs(A[i,i])
+                pivot=abs(A[i,k])
         if s!=k:
             A[[k,s]]=A[[s,k]]
             b[k],b[s]=b[s],b[k]
@@ -331,29 +331,33 @@ def massimoPivotParziale(A,b):
     return triang_sup(U, b)
 
 def fattLUconPivot(A):
-    n,m=shape(A)
-    if n!=m: raise Exception("Matrice non quadrata")
-    A=copy(A)
-    L=identity(n)
-    P=identity(n)
-    for k in range(n-1):
-        s = k
-        pivot = abs(A[k, k])
+    n, m = shape(A)
+    if n != m: raise Exception("Matrice non quadrata")
+    tol = 1e-15
+    A = copy(A)
+    L = identity(n)
+    P = identity(n)
+    for k in range(n - 1):
+        if abs(A[k, k]) < tol:
+            trovato = False
+            i = k + 1
+            while (not trovato and i < n):
+                if abs(A[i, k]) > tol:
+                    A[[i, k]] = A[[k, i]]
+                    L[[i, k]] = L[[k, i]]
+                    P[[i, k]] = P[[k, i]]
+                    trovato = True
+                    break
+                else:
+                    i += 1
+            if not trovato: raise Exception("ELEMENTI SOTTOSTANTI AL PIVOT NULLI")
         for i in range(k + 1, n):
-            if abs(A[i, i]) > pivot:
-                s = i
-                pivot = abs(A[i, i])
-        if s != k:
-            A[[k, s]] = A[[s, k]]
-            L[[k,s]]= L[[s,k]]
-            P[[k,s]]=P[[s,k]]
-        for i in range(k+1,n):
-            mik=-A[i,k]/A[k,k]
-            L[i,k]=-mik
-            for j in range(k+1,n):
-                A[i,j]=A[i,j]+mik*A[k,j]
-    U=triu(A)
-    return P,L,U
+            mik = -A[i, k] / A[k, k]
+            L[i, k] = -mik
+            for j in range(k + 1, n):
+                A[i, j] = A[i, j] + mik * A[k, j]
+    U = triu(A)
+    return P, L, U
 
 def inversaLU(A):
     n,m=shape(A)
@@ -363,6 +367,7 @@ def inversaLU(A):
     inv=zeros((n,n))
     mik=0
     for k in range(0,n-1):
+        if abs(A[k,k])<1e-15: raise Exception("Impossibile continuare")
         for i in range (k+1,n):
             mik=-A[i,k]/A[k,k]
             for j in range(k+1,n):
@@ -370,7 +375,6 @@ def inversaLU(A):
             for j in range(n):
                 I[i, j] = I[i, j] + mik * I[k, j]
     U=triu(A)
-    print(U)
     for i in range(n):
         inv[:,i]=linalg.solve(U,I[:,i])
     return inv
@@ -396,9 +400,9 @@ def riduzioneScalini(A):
                 h+=1
             if not trovato: j+=1
         #calcoli
-        if trovato:
-            for k in range(i+1,righe):
-                A[k]=A[k]-A[i]*(A[k,j]/A[i,j])
+        if not trovato: raise Exception ("Impossibile proseguire")
+        for k in range(i+1,righe):
+            A[k]=A[k]-A[i]*(A[k,j]/A[i,j])
         i+=1
         j+=1
     return triu(A)
