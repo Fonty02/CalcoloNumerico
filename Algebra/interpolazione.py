@@ -11,3 +11,7 @@ def Vandermond(x):
         for j in range(1,c):
             V[i,j]=x[i]**(j)
     return V
+
+
+
+def lagrange(x,y)
