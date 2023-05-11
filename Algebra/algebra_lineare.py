@@ -186,7 +186,7 @@ def triang_sup(A, b):
     [m, n] = shape(A)  # oppure n=len(b)
     x = zeros(shape=(n, 1))  # preallochiamo la memoria per x
     tol = 1e-15
-    for i in range(n - 1, -1, -1):
+    for i in range(m - 1, -1, -1):
         if abs(A[i, i]) < tol:
             raise ValueError('Matrice singolare')
         somma = 0
@@ -232,7 +232,7 @@ def triang_inf(A, b):
     [m, n] = shape(A)  # oppure n=len(b)
     x = zeros(shape=(n, 1))  # preallochiamo la memoria per x
     tol = 1e-15
-    for i in range(0, n):
+    for i in range(0, m):
         if abs(A[i, i]) < tol:
             raise ValueError('Matrice singolare')
         else:
@@ -275,7 +275,10 @@ def fattlu(A):
 
 def determinanteLU(A):
     L, U = fattlu(A)
-    return laplace(U)
+    det=1
+    for i in range(shape(U)[0]):
+        det*=U[i,i]
+    return det
 
 
 def risoluzioneSistemaLU(A, b):

@@ -1,34 +1,90 @@
-import numpy
 from numpy import *
 
-def fattLu(A:numpy.array):
-    n,m=numpy.shape(A)
-    if n!=m: raise Exception("Matrice non quadrata")
-    A=copy(A) #creo la copia locale dato che passa per riferimento
-    L=numpy.ones((n,n))
+
+
+def fattLU(A):
+    r,c=shape(A)
+    if r!=c : raise ("MATRICE NON QUADRATA")
     tol=1e-15
-    for k in range(n-1):
-        if abs(A[k,k])<tol: raise Exception("ELEMENTO PIVOTALE NULLO")
-        for i in range (k+1,n):
+    L=zeros((r,c))
+    A=copy(A)
+    for k in range (r):
+        if abs(A[k,k])<tol: raise("MATRICE SINGOLARE")
+        for i in range(k+1,c):
             mik=-A[i,k]/A[k,k]
             L[i,k]=-mik
-            for j in range (k+1,n):
+            for j in range(k+1,r):
                 A[i,j]=A[i,j]+mik*A[k,j]
-    U=triu(A)
-    return L,U
+    return L,triu(A)
 
 
-def triangolareSUperiore(A:numpy.array,b:numpy.array):  #algoritmo di sost. all'indietro
-    n=shape(b)[0]
-    if shape(A)!=(n,n): raise Exception("NON VALIDO")
-    x=numpy.zeros((shape(b)))
-    for i in range (n): #parte dall'ultimo elemento (n-1) e deve arrivare al primo (quindi diminusce fino a -1 escluso, quindi 0)
-        if abs(A[i,i])<1e-15: raise Exception("Matrice singolare")
-        sum=0
-        for j in range(i):
-            sum+=A[i,j]*x[j]
-        x[i]=(b[i]-sum)/A[i,i]
-    return x
+def eliminazioneGaussSemplice(A,b):
+    r,c=shape(A)
+    if r!=c: raise("MATRICE NON QUADRATA")
+    tol=1e-15
+    A=copy(A)
+    b=copy(b)
+    for k in range(r):
+        if abs(A[k,k])<tol : raise ("MATRICE SINGOLARE")
+        for i in range(k+1,c):
+            mik=-A[i,k]/A[k,k]
+            b[i]=b[i]+mik*b[k]
+            for j in range(k+1,c):
+                A[i,j]=A[i,j]+mik*A[k,j]
+    return linalg.solve(triu(A),b)
+
+
+def massimoPivotParziale(A,b):
+    r, c = shape(A)
+    if r != c: raise ("MATRICE NON QUADRATA")
+    A = copy(A)
+    b = copy(b)
+    for k in range(r):
+        pivot=abs(A[k,k])
+        s=k
+        for i in range(k+1,r):
+            if abs(A[i,k])>pivot:
+                s=i
+                pivot=abs(A[i,k])
+        if s!=k:
+            A[[k,s]]=A[[s,k]]
+            b[i],b[k]=b[k],b[i]
+        for i in range(k + 1, c):
+            mik = -A[i, k] / A[k, k]
+            b[i] = b[i] + mik * b[k]
+            for j in range(k + 1, c):
+                A[i, j] = A[i, j] + mik * A[k, j]
+    return linalg.solve(triu(A),b)
+
+
+
+def fattLUconPivot(A):
+    r,c=shape(A)
+    if r!=c: raise ("MATRICE QUADRATA")
+    L=zeros((r,c))
+    P=identity(r)
+    tol=1e-15
+    A=copy(A)
+    for k in range(r):
+        if abs(A[k,k])<tol:
+            trovato=False
+            i=k+1
+            while(i<r and not trovato):
+                if abs(A[i,k])>tol:
+                    A[[i,k]]=A[[k,i]]
+                    L[[i,k]]=A[[k,i]]
+                    P[[i,k]]=P[[k,i]]
+                    trovato=True
+                    break
+                else: i+=1
+            if not trovato: raise ("IMPOSSIBILE")
+        for i in range(k + 1, c):
+            mik = -A[i, k] / A[k, k]
+            L[i, k] = -mik
+            for j in range(k + 1, r):
+                A[i, j] = A[i, j] + mik * A[k, j]
+        return P, L, triu(A)
+
 
 
 
