@@ -4,9 +4,9 @@ from numpy import *
 
 
 def Vandermonde(x):
-    r,c=shape(x)[0]+1
+    r=c=shape(x)[0]
     V=zeros((r,c))
-    V[:,0]=ones(1,r)
+    V[:,0]=ones((1,r))
     for i in range(r):
         for j in range(c):
             V[i,j]=x[i]**(j)
@@ -59,5 +59,4 @@ def interpola(f,int,n):
 def f(x):
     return e**(-x)*sin(x)
 
-print(Vandermonde([1,2,3]))
-print(solveVandermond([1,2,3],[5,-3,-6]))
+print(interpola(f,[0,pi],100))
