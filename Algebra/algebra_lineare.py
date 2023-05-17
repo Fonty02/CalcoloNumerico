@@ -1,3 +1,4 @@
+import numpy
 from scipy import *
 from numpy import *
 
@@ -391,7 +392,7 @@ def riduzioneScalini(A):
     j = 0
     i = 0
     trovato=True
-    while i<righe -1 and trovato:
+    while i<righe -1 and j<colonne and trovato:
         trovato= abs(A[i,j])>tol
         while j<colonne and not trovato:
             h = i
@@ -408,7 +409,7 @@ def riduzioneScalini(A):
             A[k]=A[k]-A[i]*(A[k,j]/A[i,j])
         i+=1
         j+=1
-    return triu(A)
+    return A
 
 def rank(A):
     C=riduzioneScalini(A)
@@ -442,13 +443,16 @@ def normaMatrice(A,s):
 
 
 
+def minimiQuadrati(A,b):
+    A=copy(A)
+    b=copy(b)
+    return linalg.solve(dot(transpose(A),A),dot(transpose(A),b))
 
 
-
-
-A = array([[1,-3,-1,1], [3,-9,-1,-4], [-2,6,4,0]])
-print(transpose(A))
-print(normaMatrice(A,1),end=" NORMA 1 \n")
-print(A)
-print(normaMatrice(A,-1), end=" NORMA INF \n")
+C=array([[1,-3,-1,1],[3,-9,-1,-4],[-2,6,4,0]])
+Ct=transpose(C)
+AtA=dot(C,Ct)
+print(C,end="\n\n")
+print(Ct,end="\n\n")
+print(AtA,end="\n\n\n")
 exit(0)
