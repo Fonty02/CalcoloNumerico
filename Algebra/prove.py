@@ -1,90 +1,165 @@
+import numpy
 from numpy import *
 
-
-
-def fattLU(A):
-    r,c=shape(A)
-    if r!=c : raise ("MATRICE NON QUADRATA")
+def sostituzioneIndietro(a,b):
+    r,c=shape(a)
+    if r!=c: raise ("Matrice non quadrata")
+    x=zeros(r)
     tol=1e-15
-    L=zeros((r,c))
-    A=copy(A)
-    for k in range (r):
-        if abs(A[k,k])<tol: raise("MATRICE SINGOLARE")
-        for i in range(k+1,c):
-            mik=-A[i,k]/A[k,k]
-            L[i,k]=-mik
-            for j in range(k+1,r):
-                A[i,j]=A[i,j]+mik*A[k,j]
-    return L,triu(A)
+    for i in range(r-1,-1,-1):
+        if abs(a[i,i])<tol: raise ("Matrice singolare")
+        sum=0
+        for j in range (i+1,r):
+            sum+=a[i,j]*x[j]
+        x[i]=(b[i]-sum)/a[i,i]
+    return x
 
 
-def eliminazioneGaussSemplice(A,b):
-    r,c=shape(A)
-    if r!=c: raise("MATRICE NON QUADRATA")
+
+def sostituzioneAvanti(a,b):
+    r,c=shape(a)
+    if r!=c: raise ("Matrice non quadrata")
+    x=zeros(r)
     tol=1e-15
-    A=copy(A)
+    for i in range(r):
+        if abs(a[i,i])<tol: raise ("Matrice singolare")
+        sum=0
+        for j in range (i):
+            sum+=a[i,j]*x[j]
+        x[i]=(b[i]-sum)/a[i,i]
+    return x
+
+def fattLU(a):
+    m,n=shape(a)
+    if m!=n: raise("Matrice non quadrata")
+    tol=1e-15
+    a=copy(a)
+    l=identity(n)
+    for k in range(n-1):
+        if abs(a[k,k])<tol: raise ("Matrice singolare")
+        for i in range(k+1,n):
+            mik=-a[i,k]/a[k,k]
+            a[i]=a[i]+mik*a[k]
+            l[i,k]=-mik
+    return l,triu(a)
+
+def eliminazioneGauss(a,b):
+    m,n=shape(a)
+    if m!=n: raise("Matrice non quadrata")
+    tol=1e-15
+    a=copy(a)
     b=copy(b)
-    for k in range(r):
-        if abs(A[k,k])<tol : raise ("MATRICE SINGOLARE")
-        for i in range(k+1,c):
-            mik=-A[i,k]/A[k,k]
+    for k in range(n-1):
+        if abs(a[k,k])<tol: raise("Matrice singolare")
+        for i in range(k+1,n):
+            mik=-a[i,k]/a[k,k]
+            a[i]=a[i]+mik*a[k]
             b[i]=b[i]+mik*b[k]
-            for j in range(k+1,c):
-                A[i,j]=A[i,j]+mik*A[k,j]
-    return linalg.solve(triu(A),b)
+    return sostituzioneIndietro(triu(a),b)
 
-
-def massimoPivotParziale(A,b):
-    r, c = shape(A)
-    if r != c: raise ("MATRICE NON QUADRATA")
-    A = copy(A)
-    b = copy(b)
-    for k in range(r):
-        pivot=abs(A[k,k])
+def massimoPivotParziale(a,b):
+    m,n=shape(a)
+    if m!=n: raise("Matrice non quadrata")
+    a=copy(a)
+    b=copy(b)
+    for k in range(n-1):
+        pivot=abs(a[k,k])
         s=k
-        for i in range(k+1,r):
-            if abs(A[i,k])>pivot:
+        for i in range(k+1,n):
+            if abs(a[i,k])>pivot:
                 s=i
-                pivot=abs(A[i,k])
+                pivot=abs(a[i,k])
         if s!=k:
-            A[[k,s]]=A[[s,k]]
-            b[i],b[k]=b[k],b[i]
-        for i in range(k + 1, c):
-            mik = -A[i, k] / A[k, k]
-            b[i] = b[i] + mik * b[k]
-            for j in range(k + 1, c):
-                A[i, j] = A[i, j] + mik * A[k, j]
-    return linalg.solve(triu(A),b)
+            a[[k,s]]=a[[s,k]]
+            b[s],b[k]=b[k],b[s]
+        for i in range(k+1,n):
+            mik=-a[i,k]/a[k,k]
+            a[i]=a[i]+mik*a[k]
+            b[i]=b[i]+mik*b[k]
+    return sostituzioneIndietro(triu(a),b)
 
 
 
-def fattLUconPivot(A):
-    r,c=shape(A)
-    if r!=c: raise ("MATRICE QUADRATA")
-    L=zeros((r,c))
-    P=identity(r)
+def fattLUconPivot(a):
+    n,m=shape(a)
+    if n!=m: raise("Matrice non quadrata")
+    a=copy(a)
+    l=identity(n)
+    p=identity(n)
     tol=1e-15
-    A=copy(A)
-    for k in range(r):
-        if abs(A[k,k])<tol:
-            trovato=False
+    for k in range(n-1):
+        if abs(a[k,k])<tol:
             i=k+1
-            while(i<r and not trovato):
-                if abs(A[i,k])>tol:
-                    A[[i,k]]=A[[k,i]]
-                    L[[i,k]]=A[[k,i]]
-                    P[[i,k]]=P[[k,i]]
+            trovato=False
+            while (i<n) and not trovato:
+                if abs(a[i,k])>tol:
                     trovato=True
-                    break
+                    a[[i,k]]=a[[k,i]]
+                    l[[i, k]] = l[[k, i]]
+                    p[[i, k]] = p[[k, i]]
                 else: i+=1
-            if not trovato: raise ("IMPOSSIBILE")
-        for i in range(k + 1, c):
-            mik = -A[i, k] / A[k, k]
-            L[i, k] = -mik
-            for j in range(k + 1, r):
-                A[i, j] = A[i, j] + mik * A[k, j]
-        return P, L, triu(A)
+            if not trovato: raise("IMPOSSIBILE")
+        for i in range(k+1,n):
+            mik=-a[i,k]/a[k,k]
+            a[i]=a[i]+mik*a[k]
+            l[i,k]=-mik
+    return p,l,triu(a)
+
+
+def inversaLU(a):
+    n,m=shape(a)
+    if n!=m: raise("Matrice non quadrata")
+    a=copy(a)
+    i=identity(n)
+    inv=identity(n)
+    tol=1e-15
+    for k in range(n-1):
+        if abs(a[k,k])<tol: raise("Matrice singolare")
+        for i in range (k+1,n):
+            mik=-a[i,k]/a[k,k]
+            a[i]=a[i]+mik*a[k]
+            i[i]=i[i]+mik*i[k]
+    u=triu(a)
+    for i in range(n):
+        inv[:,i]=sostituzioneIndietro(u,i[:,i])
+    return inv
+
+def riduzioneScalini(a):
+    righe,colonne=shape(a)
+    tol=1e-15
+    a=copy(a)
+    i=0
+    j=0
+    trovato=False
+    while i<(righe-1) and j<(colonne) and not trovato:
+        trovato=abs(a[i,j])>tol
+        while j<colonne and not trovato:
+            h=i
+            while h<righe and not trovato:
+                if abs(a[h,j])>tol:
+                    a[[h,i]]=a[[i,h]]
+                    trovato=True
+                else: h+=1
+            if not trovato: j+=1
+        for k in range(i+1,righe):
+            mik=-a[k,j]/a[i,j]
+            a[k]=a[k]+mik*a[i]
+        i+=1
+        j+=1
+    return a
+
+def rank(a):
+    a=copy(a)
+    a=riduzioneScalini(a)
+    r,c=shape(a)
+    count=0
+    for i in range(r):
+        if not (numpy.all((a[i]==0))):
+            count+=1
+    return count
 
 
 
-
+A=array([[1.0,1,-1,0,-1],[0,2,-1,-1,-1],[0,0,2,0,1],[0,0,0,2,0],[0,0,0,0,1.5]])
+print(riduzioneScalini(A))
+print(rank(A))
