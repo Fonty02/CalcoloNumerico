@@ -449,9 +449,8 @@ def minimiQuadrati(A,b):
     return linalg.solve(dot(transpose(A),A),dot(transpose(A),b))
 
 
-A=array([[1.0,1,-1,0,-1],[0,2,-1,-1,-1],[0,0,2,0,1],[0,0,0,2,0],[0,0,0,0,1.5]])
-b=array([0,0,0,0,1])
-print(A)
 
-print(triang_sup(A,b))
-exit(0)
+A=array([[1,-3,1,-1],[3,-9,-4,-1],[-2,6,0,4]])
+print(A)
+print(riduzioneScalini(A))
+print(rank(A))

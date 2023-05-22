@@ -130,8 +130,8 @@ def riduzioneScalini(a):
     a=copy(a)
     i=0
     j=0
-    trovato=False
-    while i<(righe-1) and j<(colonne) and not trovato:
+    trovato=True
+    while i<(righe-1) and j<(colonne) and trovato:
         trovato=abs(a[i,j])>tol
         while j<colonne and not trovato:
             h=i
@@ -160,6 +160,7 @@ def rank(a):
 
 
 
-A=array([[1.0,1,-1,0,-1],[0,2,-1,-1,-1],[0,0,2,0,1],[0,0,0,2,0],[0,0,0,0,1.5]])
+
+A=array([[-3,-1,1,1],[-9,-1,-4,3],[-6,4,0,2]])
 print(riduzioneScalini(A))
 print(rank(A))
