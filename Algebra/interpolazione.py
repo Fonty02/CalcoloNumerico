@@ -97,5 +97,9 @@ def rettaRegressione(xx, yy):
     pyplot.ylabel = "ASSE DELLE Y"
     pyplot.show()
 
+# linalg.lstsq(A,b) risolve i minimi quadrati
+# numpy.polyfit(x, y, deg, rcond=None, full=False, w=None, cov=False)[source]Least squares polynomial fit.
+# numpy.polyval(p, x)[source] Evaluate a polynomial at specific values
 
-print(rettaRegressione([-3, 4, 8], [-1, -2, 4]))
+interpola(f, [0, pi], 5)
+rettaRegressione([-3, 4, 8], [-1, -2, 4])
