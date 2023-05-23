@@ -1,3 +1,4 @@
+import numpy
 from matplotlib import pyplot
 from scipy import *
 from numpy import *
@@ -101,5 +102,22 @@ def rettaRegressione(xx, yy):
 # numpy.polyfit(x, y, deg, rcond=None, full=False, w=None, cov=False)[source]Least squares polynomial fit.
 # numpy.polyval(p, x)[source] Evaluate a polynomial at specific values
 
-interpola(f, [0, pi], 5)
-rettaRegressione([-3, 4, 8], [-1, -2, 4])
+def approssimazionePolinomiale():
+    m=21
+    x=linspace(0,1,m)
+    yt=-x**3 + 2*x**2 - x + 1
+    yp=yt+0.021*random.randn(m)
+    xx=linspace(0,1,100)
+    N=4
+    R2=zeros((N,1))
+    for n in range(N):
+        p=numpy.polyfit(x,yp,n)
+        pxx=numpy.polyval(p,xx)
+        pyplot.plot(xx, pxx)
+        R2[n]=numpy.var(numpy.polyval(p,x))/numpy.var(yp)
+    pyplot.plot(x,yt,'.',x,yp,'.')
+    pyplot.show()
+    print(R2)
+
+
+approssimazionePolinomiale()
