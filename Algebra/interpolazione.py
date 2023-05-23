@@ -2,6 +2,8 @@ import numpy
 from matplotlib import pyplot
 from scipy import *
 from numpy import *
+import warnings
+
 
 
 def Vandermonde(x):
@@ -65,6 +67,7 @@ def f(x):
     return e ** (-x) * sin(x)
 
 
+
 def retta(a0, a1, x):
     return a0 * x + a1
 
@@ -115,10 +118,16 @@ def approssimazionePolinomiale(a,b,m,f,tol):
     pxx=NaN
     n=0
     while(R2<tol):
-        n+=1
-        p=numpy.polyfit(x,yp,n)
-        pxx=numpy.polyval(p,xx)
-        R2=numpy.var(numpy.polyval(p,x))/numpy.var(yp)
+            n+=1
+            with warnings.catch_warnings():
+                warnings.filterwarnings('error')
+                try:
+                    p=numpy.polyfit(x,yp,n)
+                except numpy.RankWarning:
+                    print("MAL CONDIZIONATO")
+                    return
+            pxx=numpy.polyval(p,xx)
+            R2=numpy.var(numpy.polyval(p,x))/numpy.var(yp)
     pyplot.plot(xx, pxx,color='red')
     pyplot.plot(x,yt,'.',color='blue')
     pyplot.plot(x, yp, '.', color='green')
@@ -137,4 +146,4 @@ def approssimazionePolinomiale(a,b,m,f,tol):
 def f(x):
     return 1/(x**2+1)
 
-approssimazionePolinomiale(-2,2,25,f,0.95)
+approssimazionePolinomiale(-3,3,25,f,0.99)
