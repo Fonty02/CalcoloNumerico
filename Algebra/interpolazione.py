@@ -110,12 +110,13 @@ def approssimazionePolinomiale():
     xx=linspace(0,1,100)
     N=4
     R2=zeros((N,1))
-    for n in range(N):
+    for n in range(1,N+1):
         p=numpy.polyfit(x,yp,n)
         pxx=numpy.polyval(p,xx)
         pyplot.plot(xx, pxx)
-        R2[n]=numpy.var(numpy.polyval(p,x))/numpy.var(yp)
+        R2[n-1]=numpy.var(numpy.polyval(p,x))/numpy.var(yp)
     pyplot.plot(x,yt,'.',x,yp,'.')
+    pyplot.legend(['pol1','pol2','pol3','pol4'])
     pyplot.show()
     print(R2)
 
