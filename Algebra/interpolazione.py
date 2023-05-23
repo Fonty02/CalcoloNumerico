@@ -98,27 +98,43 @@ def rettaRegressione(xx, yy):
     pyplot.ylabel = "ASSE DELLE Y"
     pyplot.show()
 
-# linalg.lstsq(A,b) risolve i minimi quadrati
-# numpy.polyfit(x, y, deg, rcond=None, full=False, w=None, cov=False)[source]Least squares polynomial fit.
-# numpy.polyval(p, x)[source] Evaluate a polynomial at specific values
 
-def approssimazionePolinomiale():
-    m=21
-    x=linspace(0,1,m)
-    yt=-x**3 + 2*x**2 - x + 1
-    yp=yt+0.021*random.randn(m)
-    xx=linspace(0,1,100)
-    N=4
-    R2=zeros((N,1))
-    for n in range(1,N+1):
+def approssimazionePolinomiale(a,b,m,f,tol):
+    """
+    a-> estremo inferiore intervallo
+    b -> estremo superiore intervallo
+    m -> numero di punti distinti
+    f -> funzione in cui valutare i punti
+    tol -> indice di determinazione minimo
+    """
+    x=linspace(a,b,m)
+    yt=f(x) #Punti per cui passa esattamente la funzione
+    yp=yt+0.021*random.randn(m) #Simulo una distorsione mediante funzione distribuzione normale
+    xx=linspace(a,b,100)
+    R2=0
+    pxx=NaN
+    n=0
+    while(R2<tol):
+        n+=1
         p=numpy.polyfit(x,yp,n)
         pxx=numpy.polyval(p,xx)
-        pyplot.plot(xx, pxx)
-        R2[n-1]=numpy.var(numpy.polyval(p,x))/numpy.var(yp)
-    pyplot.plot(x,yt,'.',x,yp,'.')
-    pyplot.legend(['pol1','pol2','pol3','pol4'])
+        R2=numpy.var(numpy.polyval(p,x))/numpy.var(yp)
+    pyplot.plot(xx, pxx,color='red')
+    pyplot.plot(x,yt,'.',color='blue')
+    pyplot.plot(x, yp, '.', color='green')
+    string="Polinomio di grado "+str(n)
+    string2="Indice di determinazione ottenuto "+str(round(R2,5))
+    pyplot.legend([string,'punti reali','punti distorti'])
+    pyplot.title(string2,color='purple',weight='bold')
+    pyplot.ylabel("ASSE DELLE Y",  size=10, weight='bold')
+    pyplot.xlabel("ASSE DELLE X",  size=10, weight='bold')
+    pyplot.grid()
     pyplot.show()
-    print(R2)
 
 
-approssimazionePolinomiale()
+
+
+def f(x):
+    return 1/(x**2+1)
+
+approssimazionePolinomiale(-2,2,25,f,0.95)
