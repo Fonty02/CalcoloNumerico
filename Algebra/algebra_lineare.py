@@ -448,6 +448,30 @@ def minimiQuadrati(A,b):
     b=copy(b)
     return linalg.solve(dot(transpose(A),A),dot(transpose(A),b))
 
+def potenze(A,y0,tol=1e-10,kmax=500):
+    """
+    A -> Matrice quadrata che ammette autovolare dominante
+    y0 -> vettore iniizlae
+    tol -> precisione richiesta
+    kmax -> numero massimo di iterazioni
+    """
+    [m,n]=shape(A)
+    arresto=False
+    k=0
+    z0=y0/linalg.norm(y0)
+    sigma0=0
+    while not(arresto) and k<=kmax:
+        k+=1
+        t1=dot(A,z0) #da teoria
+        z1=t1/linalg.norm(t1) #da teoria
+        sigma1=sum(t1*z0) #tk+1 T * zk
+        Er=abs(sigma1-sigma0)/abs(sigma1)
+        arresto=Er<tol
+        z0=z1
+        sigma0=sigma1
+    if not arresto:
+            print("successione non convergente")
+    return sigma1,z1
 
 
 A=array([[1,-3,1,-1],[3,-9,-4,-1],[-2,6,0,4]])
