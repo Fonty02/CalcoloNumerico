@@ -460,6 +460,8 @@ def potenze(A,y0,tol=1e-10,kmax=500):
     k=0
     z0=y0/linalg.norm(y0)
     sigma0=0
+    sigma1=NaN
+    z1=NaN
     while not(arresto) and k<=kmax:
         k+=1
         t1=dot(A,z0) #da teoria
