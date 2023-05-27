@@ -35,8 +35,7 @@ def lagrange(x, y, xx):
     for k in range(n):
         Lk = 1
         for i in range(n):
-            if i != k: Lk *= ((xx - x[i]) / (
-                        x[k] - x[i]))  # xx è un vettore. Quindi a ogni elemento di xx sottraggo x[i] e ottengo
+            if i != k: Lk *= ((xx - x[i]) / (x[k] - x[i]))  # xx è un vettore. Quindi a ogni elemento di xx sottraggo x[i] e ottengo
             # un vettore. Poi CON *
             # STO FACENDO IL PRODOTTO TRA GLI ELEMENTI DELLO STESSO INDICE
         yy += (y[k] * Lk)

@@ -315,7 +315,6 @@ def massimoPivotParziale(A,b):
     if n != m: raise Exception("Matrice non quadrata")
     A = copy(A)
     b = copy(b)
-    tol = 1e-15
     for k in range(n - 1):
         s=k
         pivot=abs(A[k,k])
@@ -333,6 +332,17 @@ def massimoPivotParziale(A,b):
                 A[i, j] = A[i, j] + mik * A[k, j]
     U = triu(A)
     return triang_sup(U, b)
+
+
+def GaussTridiagonale(A,b):
+    A=copy(A)
+    b=copy(b)
+    [m,n]=shape(A)
+    for k in range(n-1):
+        mik=-A[k+1,k]/A[k,k]
+        b[k+1]=b[k+1]+mik*b[k]
+        A[k+1,k+1]=A[k+1,k+1]+mik*A[k,k+1]
+    return triang_sup(triu(A),b)
 
 def fattLUconPivot(A):
     n, m = shape(A)
@@ -404,12 +414,12 @@ def riduzioneScalini(A):
                 h+=1
             if not trovato: j+=1
         #calcoli
-        if not trovato: raise Exception ("Impossibile proseguire")
+        if not trovato: return triu(A)
         for k in range(i+1,righe):
             A[k]=A[k]-A[i]*(A[k,j]/A[i,j])
         i+=1
         j+=1
-    return A
+    return triu(A)
 
 def rank(A):
     C=riduzioneScalini(A)
