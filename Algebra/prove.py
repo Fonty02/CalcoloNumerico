@@ -1,166 +1,229 @@
-import numpy
 from numpy import *
+from scipy import *
 
-def sostituzioneIndietro(a,b):
-    r,c=shape(a)
-    if r!=c: raise ("Matrice non quadrata")
-    x=zeros(r)
+def sostituzione_indietro(A,b):
+    m,n=shape(A)
+    if m!=n:
+        print("Errore")
+        return
+    x=zeros((n,1))
     tol=1e-15
-    for i in range(r-1,-1,-1):
-        if abs(a[i,i])<tol: raise ("Matrice singolare")
+    for i in range(n-1,-1,-1):
+        if abs(A[i,i])<tol:
+            print("SIngolare")
+            return
         sum=0
-        for j in range (i+1,r):
-            sum+=a[i,j]*x[j]
-        x[i]=(b[i]-sum)/a[i,i]
+        for j in range(i+1,n):
+            sum+=A[i,j]*x[j]
+        x[i]=(b[i]-sum)/A[i,i]
     return x
 
-
-
-def sostituzioneAvanti(a,b):
-    r,c=shape(a)
-    if r!=c: raise ("Matrice non quadrata")
-    x=zeros(r)
+def sostituzione_avanti(A,b):
+    m,n=shape(A)
+    if m!=n:
+        print("Errore")
+        return
+    x=zeros((n,1))
     tol=1e-15
-    for i in range(r):
-        if abs(a[i,i])<tol: raise ("Matrice singolare")
-        sum=0
-        for j in range (i):
-            sum+=a[i,j]*x[j]
-        x[i]=(b[i]-sum)/a[i,i]
-    return x
-
-def fattLU(a):
-    m,n=shape(a)
-    if m!=n: raise("Matrice non quadrata")
-    tol=1e-15
-    a=copy(a)
-    l=identity(n)
-    for k in range(n-1):
-        if abs(a[k,k])<tol: raise ("Matrice singolare")
-        for i in range(k+1,n):
-            mik=-a[i,k]/a[k,k]
-            a[i]=a[i]+mik*a[k]
-            l[i,k]=-mik
-    return l,triu(a)
-
-def eliminazioneGauss(a,b):
-    m,n=shape(a)
-    if m!=n: raise("Matrice non quadrata")
-    tol=1e-15
-    a=copy(a)
-    b=copy(b)
-    for k in range(n-1):
-        if abs(a[k,k])<tol: raise("Matrice singolare")
-        for i in range(k+1,n):
-            mik=-a[i,k]/a[k,k]
-            a[i]=a[i]+mik*a[k]
-            b[i]=b[i]+mik*b[k]
-    return sostituzioneIndietro(triu(a),b)
-
-def massimoPivotParziale(a,b):
-    m,n=shape(a)
-    if m!=n: raise("Matrice non quadrata")
-    a=copy(a)
-    b=copy(b)
-    for k in range(n-1):
-        pivot=abs(a[k,k])
-        s=k
-        for i in range(k+1,n):
-            if abs(a[i,k])>pivot:
-                s=i
-                pivot=abs(a[i,k])
-        if s!=k:
-            a[[k,s]]=a[[s,k]]
-            b[s],b[k]=b[k],b[s]
-        for i in range(k+1,n):
-            mik=-a[i,k]/a[k,k]
-            a[i]=a[i]+mik*a[k]
-            b[i]=b[i]+mik*b[k]
-    return sostituzioneIndietro(triu(a),b)
-
-
-
-def fattLUconPivot(a):
-    n,m=shape(a)
-    if n!=m: raise("Matrice non quadrata")
-    a=copy(a)
-    l=identity(n)
-    p=identity(n)
-    tol=1e-15
-    for k in range(n-1):
-        if abs(a[k,k])<tol:
-            i=k+1
-            trovato=False
-            while (i<n) and not trovato:
-                if abs(a[i,k])>tol:
-                    trovato=True
-                    a[[i,k]]=a[[k,i]]
-                    l[[i, k]] = l[[k, i]]
-                    p[[i, k]] = p[[k, i]]
-                else: i+=1
-            if not trovato: raise("IMPOSSIBILE")
-        for i in range(k+1,n):
-            mik=-a[i,k]/a[k,k]
-            a[i]=a[i]+mik*a[k]
-            l[i,k]=-mik
-    return p,l,triu(a)
-
-
-def inversaLU(a):
-    n,m=shape(a)
-    if n!=m: raise("Matrice non quadrata")
-    a=copy(a)
-    i=identity(n)
-    inv=identity(n)
-    tol=1e-15
-    for k in range(n-1):
-        if abs(a[k,k])<tol: raise("Matrice singolare")
-        for i in range (k+1,n):
-            mik=-a[i,k]/a[k,k]
-            a[i]=a[i]+mik*a[k]
-            i[i]=i[i]+mik*i[k]
-    u=triu(a)
     for i in range(n):
-        inv[:,i]=sostituzioneIndietro(u,i[:,i])
-    return inv
+        if abs(A[i,i])<tol:
+            print("SIngolare")
+            return
+        sum=0
+        for j in range(i):
+            sum+=A[i,j]*x[j]
+        x[i]=(b[i]-sum)/A[i,i]
+    return x
 
-def riduzioneScalini(a):
-    righe,colonne=shape(a)
+def fattLU(A):
+    m,n=shape(A)
+    if m!=n:
+        print("Matrice non quadrata")
+        return
     tol=1e-15
-    a=copy(a)
+    A=copy(A)
+    L=identity(n)
+    for k in range(n-1):
+        if abs(A[k,k])<tol:
+            print("Matrice singolare")
+            return
+        for i in range(k+1,n):
+            mik=-A[i,k]/A[k,k]
+            L[i,k]=-mik
+            for j in range(k+1,n):
+                A[i,j]=A[i,j]+mik*A[k,j]
+    return L,triu(A)
+
+def eliminazioneGauss(A,b):
+    m,n=shape(A)
+    if m!=n:
+        print("Matrice non quadrata")
+        return
+    tol=1e-15
+    A=copy(A)
+    b=copy(b)
+    for k in range(n-1):
+        if abs(A[k,k])<tol:
+            print("Matrice singolare")
+            return
+        for i in range(k+1,n):
+            mik=-A[i,k]/A[k,k]
+            b[i]=b[i]+mik*b[k]
+            for j in range(k+1,n):
+                A[i,j]=A[i,j]+mik*A[k,j]
+    return linalg.solve(triu(A),b)
+
+def massimoPivotParziale(A,b):
+    m,n=shape(A)
+    if m!=n:
+        print("Matrice non quadrata")
+        return
+    A=copy(A)
+    b=copy(b)
+    for k in range(n-1):
+        s=k
+        pivot=abs(A[k,k])
+        for i in range(k+1,n):
+            tmp=abs(A[i,k])
+            if tmp>pivot:
+                s=i
+                pivot=tmp
+        if s!=k:
+            A[[k,s]]=A[[s,k]]
+            b[k],b[s]=b[s],b[k]
+        for i in range(k+1,n):
+            mik=-A[i,k]/A[k,k]
+            b[i]=b[i]+mik*b[k]
+            for j in range(k+1,n):
+                A[i,j]=A[i,j]+mik*A[k,j]
+    return linalg.solve(triu(A),b)
+
+def fattLUconPivot(A):
+    m,n=shape(A)
+    if n!=m:
+        raise "Non quadrata"
+    A=copy(A)
+    L=identity(n)
+    P=identity(n)
+    tol=1e-15
+    for k in range(n-1):
+        if abs(A[k,k])<tol:
+            trovato=False
+            for i in range(k+1,n):
+                if abs(A[i,k])>tol:
+                    A[[i,k]]=A[[k,i]]
+                    L[[i,k]]=L[[k,i]]
+                    P[[i,k]]=P[[k,i]]
+                    trovato=True
+                    break
+            if not trovato:
+                raise "Errore"
+        for i in range(k+1,n):
+            mik=-A[i,k]/A[k,k]
+            L[i,k]=-mik
+            for j in range(k+1,n):
+                A[i,j]=A[i,j]+mik*A[k,j]
+    return P,L,triu(A)
+
+def inversaLU(A):
+    m,n=shape(A)
+    if m!=n:
+        print("Matrice non quadrata")
+        return
+    tol=1e-15
+    A=copy(A)
+    I=identity(n)
+    X=zeros((n,1))
+    for k in range(n-1):
+        if abs(A[k,k])<tol:
+            print("Matrice singolare")
+            return
+        for i in range(k+1,n):
+            mik=-A[i,k]/A[k,k]
+            for j in range(k+1,n):
+                A[i,j]=A[i,j]+mik*A[k,j]
+            for j in range(k , n):
+                I[i, j] = I[i, j] + mik * I[k, j]
+    U=triu(A)
+    for i in range(n):
+        X[:,i]=linalg.solve(U,I[:,i])
+    return X
+
+def riduzioneScalini(A):
+    righe,colonne=shape(A)
+    A=copy(A)
+    tol=1e-15
+    trovato=True
     i=0
     j=0
-    trovato=True
-    while i<(righe-1) and j<(colonne) and trovato:
-        trovato=abs(a[i,j])>tol
+    while i<righe-1 and j<colonne and trovato:
+        trovato=abs(A[i,j])>tol
         while j<colonne and not trovato:
             h=i
             while h<righe and not trovato:
-                if abs(a[h,j])>tol:
-                    a[[h,i]]=a[[i,h]]
+                if abs(A[h,j])>tol:
                     trovato=True
+                    A[[h,i]]=A[[i,h]]
+                    break
                 else: h+=1
             if not trovato: j+=1
+        if not trovato: return triu(A)
         for k in range(i+1,righe):
-            mik=-a[k,j]/a[i,j]
-            a[k]=a[k]+mik*a[i]
+            mik=-A[k,j]/A[i,j]
+            A[k]=A[k]+mik*A[i]
         i+=1
         j+=1
-    return a
+    return triu(A)
 
-def rank(a):
-    a=copy(a)
-    a=riduzioneScalini(a)
-    r,c=shape(a)
+def rank(A):
+    C=riduzioneScalini(A)
     count=0
-    for i in range(r):
-        if not (numpy.all((a[i]==0))):
-            count+=1
+    for i in range(shape(C)[0]):
+        if sum(C[i])!=0: count+=1
     return count
 
+def norma(A,c):
+    A=copy(A)
+    if c==1: A=transpose(A)
+    s=sum(abs(A[0]))
+    for i in range(1,shape(A)[0]):
+        if sum(abs(A[i]))>s:
+            s=sum(abs(A[i]))
+    return s
+
+def potenze(A,y0,tol=1e-15,kmax=500):
+    z0=y0/linalg.nomr(y0)
+    sigma0=0
+    k=0
+    arresto=False
+    while k<kmax and not arresto:
+        t=dot(A,z0)
+        z1=t/linalg.norm(t)
+        sigma1=sum(t*z0)
+        Er=abs(sigma1 - sigma0)/abs(sigma1)
+        arresto= abs(Er)<tol
+        sigma0=sigma1
+        z0=z1
+    if not arresto:
+        raise "Error"
+    return sigma1,z1
 
 
+def Vandermonde(x):
+    righe,colonne=shape(x)
+    V=zeros((righe,righe))
+    for i in range(righe):
+        for j in range(righe):
+            V[i,j]=x[i]**j
+    return V
 
-A=array([[-3,-1,1,1],[-9,-1,-4,3],[-6,4,0,2]])
-print(riduzioneScalini(A))
-print(rank(A))
+
+def lagrande(x,y,xx):
+    yy=0
+    n=shape(x)[0]
+    for k in range(n):
+        Lk=1
+        for i in range(n):
+            if i!=k: Lk*=(xx-x[i])/(x[k]-x[i])
+        yy+=Lk*y[k]
+    return yy

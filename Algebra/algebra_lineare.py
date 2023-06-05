@@ -164,20 +164,20 @@ def isTriangSup(A):
     return True
 
 
-def triang_sup(A, b):
+def sostituzione_indietro(A, b):
     """
     Algoritmo di sostituzione all'indietro
     per la risoluzione dei sistemi lineari
     triangolari superiori
-    
+
     --------------------------------------
 
     INPUT
     --------------------------------------
     A: matrice dei coefficienti triangolare superiore
-    
+
     b: vettore dei termini noti
-    
+
     OUTPUT
     --------------------------------------
     x: vettore soluzione del sistema Ax=b
@@ -254,7 +254,7 @@ def fattlu(A):
     A: matrice da fattorizzare
     OUTPUT
     L: matrice triangolare inferiore speciale
-    U: matrice triangolare superiore    
+    U: matrice triangolare superiore
     """
     [m, n] = shape(A)
     if m != n:
@@ -288,7 +288,7 @@ def risoluzioneSistemaLU(A, b):
     """
     L, U = fattlu(A)
     y = triang_inf(L, b)
-    x = triang_sup(U, y)
+    x = sostituzione_indietro(U, y)
     sol = zeros(shape(x)[0])
     for i in range(0, shape(x)[0]):
         sol[i] = x[i, 0]
@@ -308,7 +308,7 @@ def eliminazioneGauss(A,b):
             for j in range(k+1,n):
                 A[i,j]=A[i,j]+mik*A[k,j]
     U=triu(A)
-    return triang_sup(U,b)
+    return sostituzione_indietro(U,b)
 
 def massimoPivotParziale(A,b):
     n, m = shape(A)
@@ -332,7 +332,7 @@ def massimoPivotParziale(A,b):
             for j in range(k + 1, n):
                 A[i, j] = A[i, j] + mik * A[k, j]
     U = triu(A)
-    return triang_sup(U, b)
+    return sostituzione_indietro(U, b)
 
 def fattLUconPivot(A):
     n, m = shape(A)
@@ -404,7 +404,7 @@ def riduzioneScalini(A):
                 h+=1
             if not trovato: j+=1
         #calcoli
-        if not trovato: raise Exception ("Impossibile proseguire")
+        if not trovato: return triu(A)
         for k in range(i+1,righe):
             A[k]=A[k]-A[i]*(A[k,j]/A[i,j])
         i+=1
@@ -414,31 +414,23 @@ def riduzioneScalini(A):
 def rank(A):
     C=riduzioneScalini(A)
     count=0
-    r,c=shape(C)
-    vuoto=zeros((1,c))
-    for i in range(r):
-        vuota=True
-        for j in range(c):
-            if abs(C[i,j])>1e-15:
-                vuota=False
-                break
-        if not vuota:
-            count=count+1
+    C=riduzioneScalini(A)
+    count=0
+    for i in range(shape(C)[0]):
+        if sum(C[i])!=0: count+=1
     return count
 
-def normaMatrice(A,s):
-    if s!=1 and s!=-1 : raise("ERRORE")
-    if s==1:     A=transpose(A)
-    row,col=shape(A)
-    max=0
-    for j in range(col):
-        max+=abs(A[1,j])
-    for i in range(1,row):
-        sum=0
-        for j in range(col):
-            sum+=abs(A[i,j])
-        if sum>max: max=sum
-    return max
+def norma(A, c):
+    A=copy(A)
+    if c=="1": A=transpose(A)
+    s=sum(abs(A[0]))
+    n=shape(A)[0]
+    for i in range (1,n):
+        p=sum(abs(A[i]))
+        if p>s:
+            s=p
+    return s
+
 
 
 
@@ -476,7 +468,11 @@ def potenze(A,y0,tol=1e-10,kmax=500):
     return sigma1,z1
 
 
-A=array([[1,-3,1,-1],[3,-9,-4,-1],[-2,6,0,4]])
-print(A)
+A=array([[-1.0,1,5,4],[0,3,-2,1],[2,7,-16,-5]])
+#print(linalg.det(A))
+b=array([5.0,-1,0,9])
+print(A,end="\n\n")
 print(riduzioneScalini(A))
 print(rank(A))
+#print(linalg.solve(A,b))
+
