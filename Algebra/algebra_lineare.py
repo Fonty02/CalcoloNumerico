@@ -315,6 +315,7 @@ def massimoPivotParziale(A,b):
     if n != m: raise Exception("Matrice non quadrata")
     A = copy(A)
     b = copy(b)
+    tol=1e-15
     for k in range(n - 1):
         s=k
         pivot=abs(A[k,k])
@@ -325,6 +326,8 @@ def massimoPivotParziale(A,b):
         if s!=k:
             A[[k,s]]=A[[s,k]]
             b[k],b[s]=b[s],b[k]
+        if abs(A[k, k]) < tol:
+            return
         for i in range(k + 1, n):
             mik = -A[i, k] / A[k, k]
             b[i] = b[i] + mik * b[k]
@@ -338,11 +341,14 @@ def GaussTridiagonale(A,b):
     A=copy(A)
     b=copy(b)
     [m,n]=shape(A)
+    tol=1e-15
     for k in range(n-1):
+        if abs(A[k, k]) < tol:
+            return
         mik=-A[k+1,k]/A[k,k]
         b[k+1]=b[k+1]+mik*b[k]
         A[k+1,k+1]=A[k+1,k+1]+mik*A[k,k+1]
-    return triang_sup(triu(A),b)
+    return sostituzione_indietro(triu(A),b)
 
 def fattLUconPivot(A):
     n, m = shape(A)
@@ -424,8 +430,6 @@ def riduzioneScalini(A):
 def rank(A):
     C=riduzioneScalini(A)
     count=0
-    C=riduzioneScalini(A)
-    count=0
     for i in range(shape(C)[0]):
         if sum(C[i])!=0: count+=1
     return count
@@ -478,11 +482,12 @@ def potenze(A,y0,tol=1e-10,kmax=500):
     return sigma1,z1
 
 
-A=array([[-1.0,1,5,4],[0,3,-2,1],[2,7,-16,-5]])
+A=array([[-1.0,1,1,-1,1],[0,0,1,0,-2],[1,1,1,0,0],[-1,1,1,1,0],[1,-1,1,0,1]])
 #print(linalg.det(A))
-b=array([5.0,-1,0,9])
+b=array([0.0,2,4,-2,0])
 print(A,end="\n\n")
-print(riduzioneScalini(A))
-print(rank(A))
-#print(linalg.solve(A,b))
+print(b,end="\n\n")
+#print(rank(A))
+print(riduzioneScalini(A),end="\n\n")
+print(linalg.solve(A,b))
 
