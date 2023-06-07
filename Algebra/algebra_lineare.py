@@ -509,12 +509,31 @@ def potenzeGenerico(A,y0,norm=2,tol=1e-10,kmax=500):
     autovett = z1 / linalg.norm(z1, inf)
     return sigma1,autovett
 
+def potenzeNonNormalizzato(A,y0,tol=1e-15,kmax=500):
+    sigma0=0
+    arresto=False
+    it=0
+    while not arresto and it<kmax:
+        it+=1
+        x=dot(A,y0)
+        sigma1=sum(x*y0)/sum(y0*y0)
+        print(sigma1)
+        err = abs(sigma1-sigma0)/abs(sigma1) <tol
+        y0=x
+        sigma0=sigma1
+    if not arresto:
+        return x/linalg.norm(x,inf)
+
 
 A = array([[9, 8, 5], [0, 8, 6], [9,0,1]])
 #print(linalg.det(A))
 b = array([6, 2,4])
-print(potenze(A,b),end="\neo\n")
-print(potenzeGenerico(A,b,2))
+print("NORMA 2 ",end=" ")
+print( potenze(A,b),end="\neo\n")
+print("NORMA 1",end=" ")
+print( potenzeGenerico(A,b,1),end="\neo\n")
+print("NO NORMA",end=" ")
+print(potenzeNonNormalizzato(A,b))
 
 
 
