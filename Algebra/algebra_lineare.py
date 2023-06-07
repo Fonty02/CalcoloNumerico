@@ -479,7 +479,7 @@ def potenze(A,y0,tol=1e-10,kmax=500):
         sigma0=sigma1
     if not arresto:
             print("successione non convergente")
-    return sigma1,z1
+    return sigma1,z1/linalg.norm(z1,inf)
 
 def potenzeGenerico(A,y0,norm=2,tol=1e-10,kmax=500):
     """
@@ -499,7 +499,6 @@ def potenzeGenerico(A,y0,norm=2,tol=1e-10,kmax=500):
         k+=1
         t1=dot(A,z0) #da teoria
         z1=t1/linalg.norm(t1,norm) #da teoria
-        autovett=z1/linalg.norm(z1,norm)
         sigma1=sum(t1*z0) / linalg.norm(z0)**2 #tk+1 T * zk
         Er=abs(sigma1-sigma0)/abs(sigma1)
         arresto=Er<tol
@@ -507,6 +506,7 @@ def potenzeGenerico(A,y0,norm=2,tol=1e-10,kmax=500):
         sigma0=sigma1
     if not arresto:
             print("successione non convergente")
+    autovett = z1 / linalg.norm(z1, inf)
     return sigma1,autovett
 
 
@@ -514,5 +514,7 @@ A = array([[9, 8, 5], [0, 8, 6], [9,0,1]])
 #print(linalg.det(A))
 b = array([6, 2,4])
 print(potenze(A,b),end="\neo\n")
-print(potenzeGenerico(A,b,inf))
+print(potenzeGenerico(A,b,2))
+
+
 
